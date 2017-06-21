@@ -1,0 +1,138 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.haddouti.pg</groupId>
+	<artifactId>blueprint-parent</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>pom</packaging>
+
+	<name>Blueprint Parent</name>
+	<organization>
+		<name>Haf-Tech-Centre</name>
+	</organization>
+
+	<modules>
+		<module>../blueprint-ejb</module>
+		<module>../blueprint-web</module>
+	</modules>
+
+	<properties>
+		<java.version>1.8</java.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<spring.version>4.3.9.RELEASE</spring.version>
+		<!-- Spring Boot. Only this version. 1.5.4 has problems with Actuator and Jackson dependencies -->
+		<spring.boot.version>1.5.2.RELEASE</spring.boot.version>
+
+		<!-- AsciiDoctor: Maven build date format -->
+		<asciidoctorj.version>1.5.4</asciidoctorj.version>
+		<asciidoctorj.pdf.version>1.5.0-alpha.11</asciidoctorj.pdf.version>
+		<maven.build.timestamp.format>yyyy-MM-dd HH</maven.build.timestamp.format>
+	</properties>
+
+	<dependencyManagement>
+		<dependencies>
+			<!-- ************ Spring *********** -->
+			<!-- Consider: spring-boot-dependencies should be the last spring lib. 
+				To override some other spring modules, place them BEFORE with scope=import 
+				and type=pom -->
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-dependencies</artifactId>
+				<version>1.5.2.RELEASE</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+
+
+			
+		</dependencies>
+	</dependencyManagement>
+
+	<dependencies>
+		<!-- Spring -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter</artifactId>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<!-- Maven compiler plugin: setting JDK version, for Mave Update Configuration -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+			</plugin>
+
+			<!-- AsciiDoctor - http://asciidoctor.org/
+				AsciiDoctorJ Extension: https://github.com/asciidoctor/asciidoctorj -->
+			<plugin>
+				<groupId>org.asciidoctor</groupId>
+				<artifactId>asciidoctor-maven-plugin</artifactId>
+				<version>1.5.5</version>
+				<dependencies>
+					<!-- AsciiDoctorJ enhancement to suport PDF output -->
+					<dependency>
+                        <groupId>org.asciidoctor</groupId>
+                        <artifactId>asciidoctorj-pdf</artifactId>
+                        <version>${asciidoctorj.pdf.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.asciidoctor</groupId>
+                        <artifactId>asciidoctorj</artifactId>
+                        <version>${asciidoctorj.version}</version>
+                    </dependency>
+				</dependencies>
+				<executions>
+					<!-- Different executions to generate different output formats -->
+					<execution>
+						<id>output-html</id>
+						<phase>generate-resources</phase>
+						<goals>
+							<goal>process-asciidoc</goal>
+						</goals>
+						<configuration>
+							<backend>html</backend>
+						</configuration>
+					</execution>
+					<execution>
+						<id>output-docbook</id>
+						<phase>generate-resources</phase>
+						<goals>
+							<goal>process-asciidoc</goal>
+						</goals>
+						<configuration>
+							<backend>docbook</backend>
+							<doctype>book</doctype>
+						</configuration>
+					</execution>
+					<execution>
+						<id>output-pdf</id>
+						<phase>generate-resources</phase>
+						<goals>
+							<goal>process-asciidoc</goal>
+						</goals>
+						<configuration>
+							<backend>pdf</backend>
+						</configuration>
+					</execution>
+				</executions>
+				<configuration>
+					<!-- Output doc in separate version directory -->
+					<outputDirectory>target/generated-docs/${project.version}</outputDirectory>
+					<attributes>
+						<project-version>${project.version}</project-version>
+						<revnumber>${project.version}</revnumber>
+						<revdate>${maven.build.timestamp}</revdate>
+						<organization>${project.organization.name}</organization>
+					</attributes>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>

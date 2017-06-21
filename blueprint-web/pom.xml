@@ -1,0 +1,70 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<artifactId>blueprint-web</artifactId>
+	<name>Blueprint Web</name>
+
+	<parent>
+		<groupId>com.haddouti.pg</groupId>
+		<artifactId>blueprint-parent</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+		<relativePath>../blueprint-parent/pom.xml</relativePath>
+	</parent>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<java.version>1.8</java.version>
+		<!-- 
+		<spring.boot.version>1.5.4.RELEASE</spring.boot.version>
+		 -->
+	</properties>
+
+	<dependencies>
+
+		<!-- Internal libs -->
+		<dependency>
+			<groupId>com.haddouti.pg</groupId>
+			<artifactId>blueprint-ejb</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<!-- *** Spring *** -->
+		<!-- Spring: Production ready features, like monitoring and health check 
+			endpoints -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<!-- Goal of plugin: - create one big fat jar - scan to find the main 
+					class - build in dependency resolver for Spring versions -->
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<version>${spring.boot.version}</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>repackage</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+</project>
