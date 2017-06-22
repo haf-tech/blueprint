@@ -1,14 +1,62 @@
-= Hello, AsciiDoc!
-Doc Writer <doc@example.com>
+= Blueprint
+Hafid Haddouti <code@haddouti.com>
+{project-version}
 
-An introduction to http://asciidoc.org[AsciiDoc].
+:toc:
 
-== First Section
+== Summary
+This project illustrate a compilation of different concepts and technical solution for "modern".footnote:[Tbd tomorrow] technology stack.
 
-* item 1
-* item 2
 
-[source,ruby]
-puts "Hello, World!"
+The key requirements for this blueprint are:
 
-{project-version} - {revdate}
+* onion architecture
+** SOLID, especially focus on D=Dependency inversion principle
+* reactivate
+* well documented
+* maintainable
+
+
+
+
+
+== Architecture
+
+The application is a web application with different endpoints.
+
+=== Components
+
+[plantuml, diagram-arch-components-general, png]
+....
+@startuml
+!pragma graphviz_dot jdot
+skinparam componentStyle uml2
+interface "Metrics" as IMetrics
+interface "Actuator" as IActuator
+interface "REST" as IRest
+
+IMetrics - [Blueprint App]
+IActuator - [Blueprint App]
+IRest - [Blueprint App]
+
+IMetrics - [Monitoring]
+@enduml
+....
+
+==== Blueprint App
+
+The Blueprint application 
+
+[plantuml, diagram-arch-components-blueprint-app, png]
+....
+@startuml
+!pragma graphviz_dot jdot
+skinparam componentStyle uml2
+
+package "Blueprint App" {
+	[Blueprint Web] --> [Blueprint Ejb]
+}
+
+@enduml
+....
+

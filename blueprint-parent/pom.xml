@@ -25,8 +25,9 @@
 		<spring.boot.version>1.5.2.RELEASE</spring.boot.version>
 
 		<!-- AsciiDoctor: Maven build date format -->
-		<asciidoctorj.version>1.5.4</asciidoctorj.version>
+		<asciidoctorj.version>1.5.5</asciidoctorj.version>
 		<asciidoctorj.pdf.version>1.5.0-alpha.11</asciidoctorj.pdf.version>
+		<asciidoctorj.diagram.version>1.5.4</asciidoctorj.diagram.version>
 		<maven.build.timestamp.format>yyyy-MM-dd HH</maven.build.timestamp.format>
 	</properties>
 
@@ -63,6 +64,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.6.1</version>
 				<configuration>
 					<source>1.8</source>
 					<target>1.8</target>
@@ -76,7 +78,12 @@
 				<artifactId>asciidoctor-maven-plugin</artifactId>
 				<version>1.5.5</version>
 				<dependencies>
-					<!-- AsciiDoctorJ enhancement to suport PDF output -->
+					<!-- AsciiDoctorJ enhancement to support PDF and Diagram output -->
+                    <dependency>
+                        <groupId>org.asciidoctor</groupId>
+                        <artifactId>asciidoctorj</artifactId>
+                        <version>${asciidoctorj.version}</version>
+                    </dependency>
 					<dependency>
                         <groupId>org.asciidoctor</groupId>
                         <artifactId>asciidoctorj-pdf</artifactId>
@@ -84,8 +91,8 @@
                     </dependency>
                     <dependency>
                         <groupId>org.asciidoctor</groupId>
-                        <artifactId>asciidoctorj</artifactId>
-                        <version>${asciidoctorj.version}</version>
+                        <artifactId>asciidoctorj-diagram</artifactId>
+                        <version>${asciidoctorj.diagram.version}</version>
                     </dependency>
 				</dependencies>
 				<executions>
@@ -111,6 +118,8 @@
 							<doctype>book</doctype>
 						</configuration>
 					</execution>
+					<!-- 
+					 -->
 					<execution>
 						<id>output-pdf</id>
 						<phase>generate-resources</phase>
@@ -119,12 +128,19 @@
 						</goals>
 						<configuration>
 							<backend>pdf</backend>
+							<attributes>
+								<!-- expects images always under src/main/asciidoc -->
+								<imagesdir>../../../target/generated-docs/${project.version}/images/</imagesdir>
+							</attributes>
 						</configuration>
 					</execution>
 				</executions>
 				<configuration>
 					<!-- Output doc in separate version directory -->
 					<outputDirectory>target/generated-docs/${project.version}</outputDirectory>
+					<requires>
+                        <require>asciidoctor-diagram</require>
+                    </requires>
 					<attributes>
 						<project-version>${project.version}</project-version>
 						<revnumber>${project.version}</revnumber>
