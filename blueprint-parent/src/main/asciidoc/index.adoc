@@ -22,7 +22,9 @@ The key requirements for this blueprint are:
 
 == Architecture
 
-The application is a web application with different endpoints.
+The key benefit of the Blueprint application is the administration of notes. A note is a set of content data, tags, rubric, attachments and possible due date.
+
+The application provides different endpoints and stores the data in a persistent storage.
 
 === Components
 
@@ -35,17 +37,76 @@ interface "Metrics" as IMetrics
 interface "Actuator" as IActuator
 interface "REST" as IRest
 
+[ES] <<Storage>>
+
 IMetrics - [Blueprint App]
 IActuator - [Blueprint App]
 IRest - [Blueprint App]
 
 IMetrics - [Monitoring]
+
+[Blueprint App] --> [ES]
 @enduml
 ....
 
 ==== Blueprint App
 
-The Blueprint application 
+
+[plantuml, diagram-arch-class-blueprint-app, png]
+....
+@startuml
+!pragma graphviz_dot jdot
+skinparam componentStyle uml2
+
+class Note {
+	String title
+	String content
+	Date createdAt
+	Date updatedAt
+	String createdBy
+	List<String> tags
+	List<NoteAttachment> attachments
+}
+
+class NoteAttachment {
+	String name
+	Blob attachment
+	Date createdAt
+}
+
+Note o-- NoteAttachment
+
+@enduml
+....
+ 
+The following use cases are part and parcel of the application. 
+
+[plantuml, diagram-arch-usecase-blueprint-app, png]
+....
+@startuml
+!pragma graphviz_dot jdot
+skinparam componentStyle uml2
+
+actor :Enduser: as E1
+actor :Admin: as A1
+
+(Search Note) as (UCSearch)
+(Maintaine Note) as (UCEdit)
+(UCEdit) <|-- (Create Note)
+(UCEdit) <|-- (Edit Note)
+(UCEdit) <|-- (Delete Note)
+(UCEdit) <|-- (Share Note)
+
+(Retrieve Stats) as (UCStats)
+
+E1 --> (UCSearch)
+E1 --> (UCEdit)
+
+A1 --> (UCStats)
+@enduml
+....
+
+Regarding the clean/onion architecture looks the distribution of the components as follows:
 
 [plantuml, diagram-arch-components-blueprint-app, png]
 ....
@@ -53,10 +114,107 @@ The Blueprint application
 !pragma graphviz_dot jdot
 skinparam componentStyle uml2
 
-package "Blueprint App" {
-	[Blueprint Web] --> [Blueprint Ejb]
+
+
+package "Blueprint Web" {
+	package "Endpoint" {
+		
+	}
+}
+
+package "Blueprint Ejb" {
+	package "Core Api" {
+	
+	}
+	 
+	package "Core Services" {
+	
+	}
+	
+	package "Core Domain Model" {
+	
+	}
+}
+@enduml
+....
+
+The main idea behind the architecture is the concept of *Dependency inversion principle*.
+
+[plantuml, component1, png]
+....
+@startuml
+!pragma graphviz_dot jdot
+skinparam componentStyle uml2
+
+package Endpoint {
+    [RestController]
+    [RestDomain]
+    [RestMonitor]
 }
 
 @enduml
 ....
+
+
+[plantuml, component2, png]
+....
+@startuml
+!pragma graphviz_dot jdot
+skinparam componentStyle uml2
+
+
+package Infrastructure {
+	[JpaEntity]
+	[JpaRepository]
+	[ESEntity]
+	[ESRepository]	
+}
+@enduml
+....
+
+
+[plantuml, component3, png]
+....
+@startuml
+!pragma graphviz_dot jdot
+skinparam componentStyle uml2
+
+package Core {
+	[CoreDomain]
+	[CoreApi]	
+	[CoreServiceMaint]
+	[CoreServiceStats]
+}
+@enduml
+....
+
+[ditaa]
+....
+	+---------+       +----------+
+	|  REST   |       |  Monitor |
+	+---------+       +----------+
+	      |                 |
+	      v                 v
+	+----------------------------+
+	|       Infrastructure       |
+	+----------------------------+
+	|    JPA      |      ES      |
+	+----------------------------+
+	              |
+	              v	
+	+----------------------------+
+	|            Core            |
+	+----------------------------+
+	| Domain Model | Services    |
+	+----------------------------+
+	
+....
+
+
+
+
+== References
+
+* https://8thlight.com/blog/uncle-bob/2012/08/13/the-clean-architecture.html
+* http://tidyjava.com/onion-architecture-interesting/
 
