@@ -1,0 +1,6 @@
+language: java
+jdk:
+  - oraclejdk8
+script:
+script:
+  - cd blueprint-parent && mvn -B -V clean install
