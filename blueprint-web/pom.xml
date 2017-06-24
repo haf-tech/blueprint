@@ -15,9 +15,16 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<java.version>1.8</java.version>
-		<!-- 
-		<spring.boot.version>1.5.4.RELEASE</spring.boot.version>
-		 -->
+
+		<springfox.version>2.7.0</springfox.version>
+
+
+		<!-- Docker -->
+		<spotify.docker.version>1.3.0</spotify.docker.version>
+		<docker.src.dir>${project.basedir}/src/main/docker</docker.src.dir>
+		<docker.build.dir>${project.build.directory}/docker</docker.build.dir>
+		<docker.image.prefix>${project.groupId}</docker.image.prefix>
+		<docker.repository>haf-tech/blueprint</docker.repository>
 	</properties>
 
 	<dependencies>
@@ -29,6 +36,20 @@
 			<version>${project.version}</version>
 		</dependency>
 
+		<dependency>
+			<groupId>com.haddouti.pg</groupId>
+			<artifactId>blueprint-infra</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<!-- API: Inject -->
+		<dependency>
+			<groupId>javax.inject</groupId>
+			<artifactId>javax.inject</artifactId>
+			<version>1</version>
+			<scope>provided</scope>
+		</dependency>
+
 		<!-- *** Spring *** -->
 		<!-- Spring: Production ready features, like monitoring and health check 
 			endpoints -->
@@ -36,7 +57,7 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator</artifactId>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
@@ -47,10 +68,32 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+
+		<!-- Swagger Support -->
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger-ui</artifactId>
+			<version>${springfox.version}</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger2</artifactId>
+			<version>${springfox.version}</version>
+			<scope>compile</scope>
+		</dependency>
 	</dependencies>
 
 	<build>
+		<!-- Final name is only the artifactId WITHOUT version number. Simplifies 
+			the usage for the Dockerfile -->
+		<finalName>${project.artifactId}</finalName>
 		<plugins>
+
+			<!-- ####################################################### -->
+			<!-- ################# Spring Boot ######################### -->
+			<!-- ####################################################### -->
+
 			<plugin>
 				<!-- Goal of plugin: - create one big fat jar - scan to find the main 
 					class - build in dependency resolver for Spring versions -->
@@ -64,6 +107,103 @@
 						</goals>
 					</execution>
 				</executions>
+			</plugin>
+
+
+			<!-- ####################################################### -->
+			<!-- ############ Docker Integration ####################### -->
+			<!-- ####################################################### -->
+
+
+			<!-- Docker plugin: mvn dockerfile:build For the docker container is it 
+				necessary, to have all relevant files (Dockerfile, jar(s)) into a working 
+				directory. For this we use maven-dependency-plugin -->
+
+			<!-- Copy the Dockerfile into target docker directory. -->
+			<plugin>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>3.0.2</version>
+				<executions>
+					<execution>
+						<id>copy-resources</id>
+						<phase>package</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${docker.build.dir}</outputDirectory>
+							<resources>
+								<resource>
+									<directory>${docker.src.dir}</directory>
+									<filtering>false</filtering>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			
+			<!--  Copy target jar into the docker dir -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>copy</id>
+						<phase>package</phase>
+						<goals>
+							<goal>copy</goal>
+						</goals>
+						<configuration>
+							<artifactItems>
+								<artifactItem>
+									<!-- Specify the lib, our application. -->
+									<groupId>${project.groupId}</groupId>
+									<artifactId>${project.artifactId}</artifactId>
+									<version>${project.version}</version>
+									<type>jar</type>
+									<overWrite>true</overWrite>
+									<outputDirectory>${docker.build.dir}</outputDirectory>
+									<!-- Specify the destination name WITHOUT version number -->
+									<destFileName>${project.artifactId}.jar</destFileName>
+								</artifactItem>
+							</artifactItems>
+							<outputDirectory>${docker.build.directory}</outputDirectory>
+							<overWriteReleases>true</overWriteReleases>
+							<overWriteSnapshots>true</overWriteSnapshots>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>com.spotify</groupId>
+				<artifactId>dockerfile-maven-plugin</artifactId>
+				<version>${spotify.docker.version}</version>
+				<executions>
+					<execution>
+						<id>docker</id>
+						<goals>
+							<!-- build docker image -->
+							<goal>build</goal>
+							<!-- push to registry <goal>push</goal> -->
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<repository>${docker.repository}</repository>
+					<tag>${project.version}</tag>
+					<contextDirectory>${docker.build.dir}</contextDirectory>
+					<!--
+					<resources>
+						<resource>
+							<targetPath>/</targetPath>
+							<directory>${project.build.directory}</directory>
+							<include>${project.build.finalName}.jar</include>
+						</resource>
+					</resources>
+					  -->
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>

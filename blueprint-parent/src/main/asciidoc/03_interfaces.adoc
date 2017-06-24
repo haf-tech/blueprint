@@ -1,0 +1,24 @@
+== Interfaces
+
+=== Overview
+
+This chapters gives an overview of the existing interfaces. The interface documentation is completely generated with swagger.
+
+=== Swagger
+
+The rest interfaces are documented with swagger. The endpoint to the swagger UI is http://localhost:8099/swagger-ui.html
+
+The swagger capabilities is reached with the following libs:
+
+* springfox-swagger2
+* springfox-swagger-ui: The UI
+
+=== Swagger AsciiDoctor Integration
+
+*in progress*
+Idea:
+
+* Using any Swagger2markup use the swagger info to generate AsciiDoctor
+* in best case during runtime
+* for this is a maven plugin necessary, like swagger-maven-plugin
+

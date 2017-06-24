@@ -1,0 +1,33 @@
+== References
+This chapter list all the relevant references.
+
+=== Libs
+
+.References
+|===
+| Name | URL | Note 
+
+| Springfox
+| https://github.com/springfox/springfox
+| Lib for Swagger Support with Spring. Generates the necessary JSON docu
+
+| Swagger2Markup
+| https://github.com/Swagger2Markup/swagger2markup
+| Swagger to AsciiDoctor support
+
+| Swagger2Markup Maven plugin
+| https://github.com/Swagger2Markup/swagger2markup-maven-plugin
+| Swagger to AsciiDoctor Maven plugin
+
+| Swagger2Markup Maven plugin: Demo
+| https://github.com/Swagger2Markup/spring-swagger2markup-demo
+| Swagger2Markup Demo
+
+| Dockerfile Maven Plugin
+| https://github.com/spotify/dockerfile-maven
+| Dockerfile maven plugin. Uses a Dockerfile to create a new docker image
+|===
+
+
+* https://8thlight.com/blog/uncle-bob/2012/08/13/the-clean-architecture.html
+* http://tidyjava.com/onion-architecture-interesting/

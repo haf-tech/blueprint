@@ -1,0 +1,12 @@
+== Summary
+
+This project illustrate a compilation of different concepts and technical solution for a "modern".footnote:[Tbd tomorrow] technology stack.
+
+The key requirements for this blueprint are:
+
+* onion architecture
+** SOLID, especially focus on D=Dependency inversion principle
+* reactivate
+* well documented
+* maintainable
+

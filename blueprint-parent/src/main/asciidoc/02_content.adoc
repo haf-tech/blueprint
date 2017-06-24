@@ -1,0 +1,213 @@
+== Overview
+
+This documentation gives an overview of the <<_architecture,architecture>> and the existing interfaces (<<_interfaces,interfaces>>).
+
+== Architecture
+
+The key benefit of the Blueprint application is the administration of notes. A note is a set of content data, tags, rubric, attachments and possible due date.
+
+The application provides different endpoints and stores the data in a persistent storage.
+
+The main concept is the onion architecture, mainly the *Dependency inversion principle*. The architecture contains the following "layers":
+
+* *Core*: which represents all the code for implementing the bounded context (Domain classes, services implementation). Main requirement is, that this layer do not know anything from the layers above. No dependencies to external libs (JAX-RS, JPA, Spring etc) are allowed. Every logic, which will be implemented with a 3rd lib, should provide an interface. This interface will be implemented in an other layer and this core layer stay loose coupled.
+* *Infrastructure*: Knows only the core layer. Realize some of the interface from the core layer using if necessary 3rd libs. Like repository implementation using a JPA implementation (EclipseLink, Spring Data JPA etc). Contains also own domain classes, like entity classes. Do not use the domain classes from the core layer for JPA logic. Otherwise is it necessary to add JPA annotations to the domain classes in the core layer. This violates the requirement, that the lower layer knows nothing from any upper one.
+* *UI*: Knows only infra and core layers. Represents any endpoint logic and libs, like REST, JSF etc. It is possible to use here the domain classes from the core layer, however it is not advisable to spread them out. 
+
+=== Components
+
+[plantuml, diagram-arch-components-general, png]
+....
+@startuml
+!pragma graphviz_dot jdot
+skinparam componentStyle uml2
+interface "Metrics" as IMetrics
+interface "Actuator" as IActuator
+interface "REST" as IRest
+
+[ES] <<Storage>>
+[JPA] <<Storage>>
+
+IMetrics - [Blueprint App]
+IActuator - [Blueprint App]
+IRest - [Blueprint App]
+
+IMetrics - [Monitoring]
+
+[Blueprint App] --> [ES]
+[Blueprint App] --> [JPA]
+@enduml
+....
+
+==== Blueprint App
+
+
+[plantuml, diagram-arch-class-blueprint-app, png]
+....
+@startuml
+!pragma graphviz_dot jdot
+skinparam componentStyle uml2
+
+class Note {
+	String title
+	String content
+	Date createdAt
+	Date updatedAt
+	String createdBy
+	List<String> tags
+	List<NoteAttachment> attachments
+}
+
+class NoteAttachment {
+	String name
+	String attachment
+	Date createdAt
+}
+
+Note o-- NoteAttachment
+
+@enduml
+....
+ 
+The following use cases are part and parcel of the application. 
+
+[plantuml, diagram-arch-usecase-blueprint-app, png]
+....
+@startuml
+!pragma graphviz_dot jdot
+skinparam componentStyle uml2
+
+actor :Enduser: as E1
+actor :Admin: as A1
+
+(Search Note) as (UCSearch)
+(Maintaine Note) as (UCEdit)
+(UCEdit) <|-- (Create Note)
+(UCEdit) <|-- (Edit Note)
+(UCEdit) <|-- (Delete Note)
+(UCEdit) <|-- (Share Note)
+
+(Retrieve Stats) as (UCStats)
+
+E1 --> (UCSearch)
+E1 --> (UCEdit)
+
+A1 --> (UCStats)
+@enduml
+....
+
+Regarding the clean/onion architecture looks the distribution of the components as follows:
+
+[plantuml, diagram-arch-components-blueprint-app, png]
+....
+@startuml
+!pragma graphviz_dot jdot
+skinparam componentStyle uml2
+
+
+
+package "Blueprint Web" {
+	package "Endpoint" {
+		
+	}
+}
+
+package "Blueprint Ejb" {
+	package "Core Api" {
+	
+	}
+	 
+	package "Core Services" {
+	
+	}
+	
+	package "Core Domain Model" {
+	
+	}
+}
+
+package "Blueprint Infra" {
+	package "JPA" {
+	
+	}
+	 
+	package "ES" {
+	
+	}	
+}
+@enduml
+....
+
+The main idea behind the architecture is the concept of *Dependency inversion principle*.
+
+[plantuml, component1, png]
+....
+@startuml
+!pragma graphviz_dot jdot
+skinparam componentStyle uml2
+
+package Endpoint {
+    [RestController]
+    [RestDomain]
+    [RestMonitor]
+}
+
+@enduml
+....
+
+
+[plantuml, component2, png]
+....
+@startuml
+!pragma graphviz_dot jdot
+skinparam componentStyle uml2
+
+
+package Infrastructure {
+	[JpaEntity]
+	[JpaRepository]
+	[ESEntity]
+	[ESRepository]	
+}
+@enduml
+....
+
+
+[plantuml, component3, png]
+....
+@startuml
+!pragma graphviz_dot jdot
+skinparam componentStyle uml2
+
+package Core {
+	[CoreDomain]
+	[CoreApi]	
+	[CoreServiceMaint]
+	[CoreServiceStats]
+}
+@enduml
+....
+
+[ditaa]
+....
+	+---------+       +----------+
+	|  REST   |       |  Monitor |
+	+---------+       +----------+
+	      |                 |
+	      v                 v
+	+----------------------------+
+	|       Infrastructure       |
+	+----------------------------+
+	|    JPA      |      ES      |
+	+----------------------------+
+	              |
+	              v	
+	+----------------------------+
+	|            Core            |
+	+----------------------------+
+	| Domain Model | Services    |
+	+----------------------------+
+	
+....
+
+

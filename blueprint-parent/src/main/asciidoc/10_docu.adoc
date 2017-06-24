@@ -1,0 +1,35 @@
+== Docu
+
+=== Overview
+
+This chapters gives an overview over of the documentation and how is it generated. The toolchain for the documentation generated consists of a combination of AsciiDoctor, AsciiDoctorJ and some further AsciiDoctorJ Extensions like AsciiDoctorJ-Diagram for PlantUML usage.
+
+=== Toolchain
+
+|===
+| Name | URL | Note
+
+| AsciiDoctor
+| 
+| AsciiDoctor is the main tool which provides the logic and markup for the whole files. The markup is similar to Markdown with some extensions.
+
+| AsciiDoctorJ
+|
+| Is an AsciiDoctor extension for Java integration. Maven plugins exist
+
+| AsciiDoctorJ PDF
+|
+| PDF extension for AsciiDoctorJ
+
+| AsciiDoctorJ Diagram
+|
+| Extension to integrate ascii art for creating diagrams, using different syntaxs, like PlantUML integration.
+
+| PlantUML
+|
+| Lib for generating different UML diagrams (UseCase, component, sequence etc) in ascii. In general this lib needs Graphviz and/dot as external execution. However PlantUML contains a alpha support for internal ploting logic (!pragma graphviz_dot jdot)
+|===
+
+
+
+
