@@ -1,5 +1,9 @@
-# Blueprint
+= Blueprint
+:author: Hafid Haddouti
 
+image:https://travis-ci.org/haf-tech/blueprint.svg?branch=master["Build Status", link="https://travis-ci.org/haf-tech/blueprint"]
+
+....
 Blueprint is a playground for illustrating different paradigms.
 
 In the meantime the following concepts are integrated or planned:
