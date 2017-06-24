@@ -85,9 +85,8 @@
 	</dependencies>
 
 	<build>
-		<!-- Final name is only the artifactId WITHOUT version number. Simplifies 
-			the usage for the Dockerfile -->
-		<finalName>${project.artifactId}</finalName>
+
+
 		<plugins>
 
 			<!-- ####################################################### -->
@@ -108,103 +107,106 @@
 					</execution>
 				</executions>
 			</plugin>
-
-
-			<!-- ####################################################### -->
-			<!-- ############ Docker Integration ####################### -->
-			<!-- ####################################################### -->
-
-
-			<!-- Docker plugin: mvn dockerfile:build For the docker container is it 
-				necessary, to have all relevant files (Dockerfile, jar(s)) into a working 
-				directory. For this we use maven-dependency-plugin -->
-
-			<!-- Copy the Dockerfile into target docker directory. -->
-			<plugin>
-				<artifactId>maven-resources-plugin</artifactId>
-				<version>3.0.2</version>
-				<executions>
-					<execution>
-						<id>copy-resources</id>
-						<phase>package</phase>
-						<goals>
-							<goal>copy-resources</goal>
-						</goals>
-						<configuration>
-							<outputDirectory>${docker.build.dir}</outputDirectory>
-							<resources>
-								<resource>
-									<directory>${docker.src.dir}</directory>
-									<filtering>false</filtering>
-								</resource>
-							</resources>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			
-			<!--  Copy target jar into the docker dir -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>copy</id>
-						<phase>package</phase>
-						<goals>
-							<goal>copy</goal>
-						</goals>
-						<configuration>
-							<artifactItems>
-								<artifactItem>
-									<!-- Specify the lib, our application. -->
-									<groupId>${project.groupId}</groupId>
-									<artifactId>${project.artifactId}</artifactId>
-									<version>${project.version}</version>
-									<type>jar</type>
-									<overWrite>true</overWrite>
-									<outputDirectory>${docker.build.dir}</outputDirectory>
-									<!-- Specify the destination name WITHOUT version number -->
-									<destFileName>${project.artifactId}.jar</destFileName>
-								</artifactItem>
-							</artifactItems>
-							<outputDirectory>${docker.build.directory}</outputDirectory>
-							<overWriteReleases>true</overWriteReleases>
-							<overWriteSnapshots>true</overWriteSnapshots>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-
-			<plugin>
-				<groupId>com.spotify</groupId>
-				<artifactId>dockerfile-maven-plugin</artifactId>
-				<version>${spotify.docker.version}</version>
-				<executions>
-					<execution>
-						<id>docker</id>
-						<goals>
-							<!-- build docker image -->
-							<goal>build</goal>
-							<!-- push to registry <goal>push</goal> -->
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<repository>${docker.repository}</repository>
-					<tag>${project.version}</tag>
-					<contextDirectory>${docker.build.dir}</contextDirectory>
-					<!--
-					<resources>
-						<resource>
-							<targetPath>/</targetPath>
-							<directory>${project.build.directory}</directory>
-							<include>${project.build.finalName}.jar</include>
-						</resource>
-					</resources>
-					  -->
-				</configuration>
-			</plugin>
 		</plugins>
 	</build>
+
+	<profiles>
+		<profile>
+			<id>dockerbuild</id>
+			<build>
+				<plugins>
+
+					<!-- ####################################################### -->
+					<!-- ############ Docker Integration ####################### -->
+					<!-- ####################################################### -->
+
+
+					<!-- Docker plugin: mvn dockerfile:build For the docker container is 
+						it necessary, to have all relevant files (Dockerfile, jar(s)) into a working 
+						directory. For this we use maven-dependency-plugin -->
+
+					<!-- Copy the Dockerfile into target docker directory. -->
+					<plugin>
+						<artifactId>maven-resources-plugin</artifactId>
+						<version>3.0.2</version>
+						<executions>
+							<execution>
+								<id>copy-resources</id>
+								<phase>package</phase>
+								<goals>
+									<goal>copy-resources</goal>
+								</goals>
+								<configuration>
+									<outputDirectory>${docker.build.dir}</outputDirectory>
+									<resources>
+										<resource>
+											<directory>${docker.src.dir}</directory>
+											<filtering>false</filtering>
+										</resource>
+									</resources>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+
+					<!-- Copy target jar into the docker dir -->
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-dependency-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>copy</id>
+								<phase>package</phase>
+								<goals>
+									<goal>copy</goal>
+								</goals>
+								<configuration>
+									<artifactItems>
+										<artifactItem>
+											<!-- Specify the lib, our application. -->
+											<groupId>${project.groupId}</groupId>
+											<artifactId>${project.artifactId}</artifactId>
+											<version>${project.version}</version>
+											<type>jar</type>
+											<overWrite>true</overWrite>
+											<outputDirectory>${docker.build.dir}</outputDirectory>
+											<!-- Specify the destination name WITHOUT version number -->
+											<destFileName>${project.artifactId}.jar</destFileName>
+										</artifactItem>
+									</artifactItems>
+									<outputDirectory>${docker.build.directory}</outputDirectory>
+									<overWriteReleases>true</overWriteReleases>
+									<overWriteSnapshots>true</overWriteSnapshots>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+
+					<plugin>
+						<groupId>com.spotify</groupId>
+						<artifactId>dockerfile-maven-plugin</artifactId>
+						<version>${spotify.docker.version}</version>
+						<executions>
+							<execution>
+								<id>docker</id>
+								<goals>
+									<!-- build docker image -->
+									<goal>build</goal>
+									<!-- push to registry <goal>push</goal> -->
+								</goals>
+							</execution>
+						</executions>
+						<configuration>
+							<repository>${docker.repository}</repository>
+							<tag>${project.version}</tag>
+							<contextDirectory>${docker.build.dir}</contextDirectory>
+							<!-- <resources> <resource> <targetPath>/</targetPath> <directory>${project.build.directory}</directory> 
+								<include>${project.build.finalName}.jar</include> </resource> </resources> -->
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+
 </project>
