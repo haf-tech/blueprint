@@ -45,6 +45,66 @@ To integrate Coda Hale/Dropwizard metrics add this dependency to the pom.xml
 </dependency>
 ----
 
+For an usage look at the `com.haddouti.pg.blueprint.note.infra.monitoring.NoteEventMonitoring<T>` implementation and the result at the metrics endpoint; see in the next listing a result with the own metrics
+
+* com.haddouti.pg.blueprint.note.infra.monitoring.NoteEventMonitoring.responses.*: A timer metric holding different values for the response time
+* com.haddouti.pg.blueprint.note.infra.monitoring.NoteEventMonitoring.executed-events: Representing a counter metrics representing the number of events
+
+[source,json]
+----
+{
+	"mem": 508751,
+	"mem.free": 216697,
+	"processors": 2,
+	"instance.uptime": 93563,
+	"uptime": 105687,
+	"systemload.average": 1.37,
+	"heap.committed": 437248,
+	"heap.init": 129024,
+	"heap.used": 220550,
+	"heap": 1815040,
+	"nonheap.committed": 73488,
+	"nonheap.init": 2496,
+	"nonheap.used": 71503,
+	"nonheap": 0,
+	"threads.peak": 21,
+	"threads.daemon": 19,
+	"threads.totalStarted": 26,
+	"threads": 21,
+	"classes": 10317,
+	"classes.loaded": 10317,
+	"classes.unloaded": 0,
+	"gc.ps_scavenge.count": 10,
+	"gc.ps_scavenge.time": 195,
+	"gc.ps_marksweep.count": 2,
+	"gc.ps_marksweep.time": 189,
+	"com.haddouti.pg.blueprint.note.infra.monitoring.NoteEventMonitoring.responses.snapshot.mean": 1,
+	"gauge.response.metrics": 16.0,
+	"com.haddouti.pg.blueprint.note.infra.monitoring.NoteEventMonitoring.executed-events": 4,
+	"gauge.response.note.v1.note": 18.0,
+	"counter.status.200.note.v1.note": 4,
+	"com.haddouti.pg.blueprint.note.infra.monitoring.NoteEventMonitoring.responses.snapshot.75thPercentile": 2,
+	"com.haddouti.pg.blueprint.note.infra.monitoring.NoteEventMonitoring.responses.snapshot.95thPercentile": 3,
+	"gauge.response.star-star.favicon.ico": 4.0,
+	"com.haddouti.pg.blueprint.note.infra.monitoring.NoteEventMonitoring.responses.snapshot.999thPercentile": 3,
+	"com.haddouti.pg.blueprint.note.infra.monitoring.NoteEventMonitoring.responses.snapshot.98thPercentile": 3,
+	"com.haddouti.pg.blueprint.note.infra.monitoring.NoteEventMonitoring.responses.snapshot.min": 0,
+	"com.haddouti.pg.blueprint.note.infra.monitoring.NoteEventMonitoring.responses.snapshot.max": 3,
+	"counter.status.200.star-star.favicon.ico": 4,
+	"counter.status.200.metrics": 4,
+	"com.haddouti.pg.blueprint.note.infra.monitoring.NoteEventMonitoring.responses.meanRate": 0.04149518995882756,
+	"com.haddouti.pg.blueprint.note.infra.monitoring.NoteEventMonitoring.responses.snapshot.median": 2,
+	"com.haddouti.pg.blueprint.note.infra.monitoring.NoteEventMonitoring.responses.snapshot.stdDev": 0,
+	"com.haddouti.pg.blueprint.note.infra.monitoring.NoteEventMonitoring.responses.fifteenMinuteRate": 0.0044076009778713995,
+	"com.haddouti.pg.blueprint.note.infra.monitoring.NoteEventMonitoring.responses.fiveMinuteRate": 0.013005185767779516,
+	"com.haddouti.pg.blueprint.note.infra.monitoring.NoteEventMonitoring.responses.count": 4,
+	"com.haddouti.pg.blueprint.note.infra.monitoring.NoteEventMonitoring.responses.snapshot.99thPercentile": 3,
+	"com.haddouti.pg.blueprint.note.infra.monitoring.NoteEventMonitoring.responses.oneMinuteRate": 0.05895238133346083,
+	"httpsessions.max": -1,
+	"httpsessions.active": 0
+}
+
+----
 
 
 === References

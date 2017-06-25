@@ -9,8 +9,11 @@ This application provides also a docker image.
 For creating the docker image the dockerfile-maven-plugin is used. This plugin expects in a working directory (contextDirectory) all the necessary files, like Dockerfile, libs/jars etc. To achieve this, we used the maven-resources-plugin and maven-dependency-plugin to copy the Dockerfile and builded jar file into the context directory.
 
 See the blueprint-web/pom.xml for details.
+To build the docker image run use the profile *dockerbuild*:
 
-To start the docker container
+`mvn -Pdockerbuild package`
+
+To start the docker container:
 
 `docker run -it --rm -p 8099:8099 haf-tech/blueprint:0.0.1-SNAPSHOT`
 

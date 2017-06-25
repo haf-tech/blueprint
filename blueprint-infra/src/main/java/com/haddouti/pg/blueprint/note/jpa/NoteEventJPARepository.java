@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.haddouti.pg.blueprint.note.core.api.NoteEvent;
+import com.haddouti.pg.blueprint.note.infra.monitoring.NoteEventMonitoring;
 import com.haddouti.pg.blueprint.note.jpa.domain.NoteEventJpa;
 
 /**
@@ -22,16 +23,23 @@ public class NoteEventJPARepository implements NoteEvent {
 	@Autowired
 	private NoteEventJPADao dao;
 
+	@Autowired
+	private NoteEventMonitoring monitoring;
+
 	@Override
 	@Async
 	@Transactional
 	public void addNoteEvent(Long id, NoteActionType action) {
 
+		monitoring.incr();
+
+		Object ctx = monitoring.startTimer();
 		NoteEventJpa event = new NoteEventJpa();
 		event.setCreatedAt(new Date());
 		event.setAction(action.name());
 
 		dao.save(event);
+		monitoring.stopTimer(ctx);
 	}
 
 }
