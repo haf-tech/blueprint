@@ -10,6 +10,7 @@ Hafid Haddouti <code@haddouti.com>
 include::01_summary.adoc[]
 include::02_content.adoc[]
 include::03_interfaces.adoc[]
-include::04_docker.adoc[]
+include::20_monitoring.adoc[]
+include::30_docker.adoc[]
 include::10_docu.adoc[]
 include::90_references.adoc[]

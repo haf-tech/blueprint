@@ -1,0 +1,53 @@
+== Monitoring
+
+=== Overview
+
+This chapters gives an about the monitoring mechanism in this application using Codahale Metrics and Spring Actuator.
+
+=== Spring Actuator
+
+With the Spring actuator extension gather the application a lot of information like
+
+* Configuration information (http://localhost:8099/autoconfig)
+* Available beans (http://localhost:8099/beans)
+* Perform a Thread dump (http://localhost:8099/dump)
+* Health information with disk space (http://localhost:8099/health)
+* Metrics. If Codahale Metrics is in classpath than contains this endpoints also this information (http://localhost:8099/metrics)
+* Trace information, the last 100 request (http://localhost:8099/trace)
+
+Some of the information are very sensitive, this is reason why the security is in general active and disallows the access without credentials. To deactivate - for dev purposes ;-) - use this parameter in `application.properties` `management.security.enabled=false`.
+
+A detailed list of the availabe endpoints and configuratoin possibilities are described here:
+https://docs.spring.io/spring-boot/docs/current/reference/html/production-ready-endpoints.html
+
+To activate this module is only a dependency necessary
+[source,xml]
+----
+<dependency>
+	<groupId>org.springframework.boot</groupId>
+	<artifactId>spring-boot-starter-actuator</artifactId>
+</dependency>
+----
+
+=== Coda Hale Metrics
+
+http://metrics.dropwizard.io[Coda Hale metrics] is one of the most famous metrics implementation. For providing own metrics is it advisable to use this lib for gather and deliver different kinds of metric information.
+
+Spring automatically determine the existins of Coda Hale Metrics in the classpaths and replace some of the own implementations with the one from Coda Hale/Dropwizard. The metrics will be also exposed via the /metrics endpoint.
+
+To integrate Coda Hale/Dropwizard metrics add this dependency to the pom.xml
+[source,xml]
+----
+<dependency>
+	<groupId>io.dropwizard.metrics</groupId>
+	<artifactId>metrics-core</artifactId>
+	<version>${dropwizard.metrics.version}</version>
+</dependency>
+----
+
+
+
+=== References
+
+* https://docs.spring.io/spring-boot/docs/current/reference/html/production-ready-endpoints.html
+

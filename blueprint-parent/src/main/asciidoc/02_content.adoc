@@ -2,6 +2,32 @@
 
 This documentation gives an overview of the <<_architecture,architecture>> and the existing interfaces (<<_interfaces,interfaces>>).
 
+== Requirements
+
+The application complies with the following functional and non-functional requirements. However the focus on this blueprint are more the non-functional requirements.
+
+=== Functional Requirements
+
+See for a draft overview of the <<arch-usecases,business use cases>>.
+
+=== Non functional Requirements
+
+* Fulfil a clean/onion architecture
+** SOLID
+** No layer in the inner circle (lower layer) has a relationship to the outer (upper) layer
+* Resilience
+* Provide enough information to maintaine the application
+** Monitoring information
+*** Log files
+*** Metrics
+**** Codahale metrics
+**** Spring Actuactor
+* Provide a documentation of the application and interfaces
+** Documentation and Code at the same place
+** Generate the documentation
+
+
+
 == Architecture
 
 The key benefit of the Blueprint application is the administration of notes. A note is a set of content data, tags, rubric, attachments and possible due date.
@@ -69,7 +95,7 @@ Note o-- NoteAttachment
 @enduml
 ....
  
-The following use cases are part and parcel of the application. 
+The following [[arch-usecases]]use cases are part and parcel of the application. 
 
 [plantuml, diagram-arch-usecase-blueprint-app, png]
 ....
