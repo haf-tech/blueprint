@@ -21,7 +21,7 @@ import com.haddouti.pg.blueprint.web.rest.domain.NoteResponse.StatusCode;
  *
  */
 @RestController
-@RequestMapping("/note")
+@RequestMapping("/note/v1")
 public class RestNoteMaintenance {
 
 	@Inject
@@ -35,6 +35,11 @@ public class RestNoteMaintenance {
 
 		NoteResponse response = new NoteResponse();
 		response.setItems(noteItems);
+
+		StatusCode statusCode = new StatusCode();
+		statusCode.setCode("0");
+		statusCode.setText("OK");
+		response.getResultStatus().add(statusCode);
 
 		return response;
 	}
