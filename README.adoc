@@ -4,7 +4,7 @@
 image:https://travis-ci.org/haf-tech/blueprint.svg?branch=master["Build Status", link="https://travis-ci.org/haf-tech/blueprint"] 
 image:https://img.shields.io/badge/License-Apache%202.0-blue.svg["License", link="https://opensource.org/licenses/Apache-2.0"]
 
-....
+
 Blueprint is a playground for illustrating different paradigms.
 
 In the meantime the following concepts are integrated or planned:
@@ -16,3 +16,4 @@ In the meantime the following concepts are integrated or planned:
 Next:
 - reactive programming
 
+An up to date documentation is https://haf-tech.github.io/blueprint/[online] available.
