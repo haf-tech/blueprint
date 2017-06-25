@@ -15,7 +15,7 @@ script:
  - cp -R target/generated-docs/*/html/* ../output
 
 after_success:
- - cd output ; rm -R .asciidoctor
+ - cd ../output ; rm -R .asciidoctor
  - git init
  - git config user.name "${GH_USER_NAME}"
  - git config user.email "{GH_USER_EMAIL}"
