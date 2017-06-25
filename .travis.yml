@@ -9,20 +9,13 @@ services:
 
 before_install:
  - mkdir -p output
- - docker pull asciidoctor/docker-asciidoctor
 
 script:
  - cd blueprint-parent && mvn -B -V clean install
- - docker run -v $TRAVIS_BUILD_DIR:/documents/ --name asciidoc-to-html asciidoctor/docker-asciidoctor asciidoctor -D /documents/output *.adoc
-
-after_error:
- - docker logs asciidoc-to-html
-
-after_failure:
- - docker logs asciidoc-to-html
+ - cp -R target/generated-docs/*/html/* ../output
 
 after_success:
- - cd output ; mv README.html index.html ; cp -R ../images images
+ - cd output ; rm -R .asciidoctor
  - git init
  - git config user.name "${GH_USER_NAME}"
  - git config user.email "{GH_USER_EMAIL}"
