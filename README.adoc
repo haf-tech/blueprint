@@ -8,12 +8,14 @@ image:https://img.shields.io/badge/License-Apache%202.0-blue.svg["License", link
 Blueprint is a playground for illustrating different paradigms.
 
 In the meantime the following concepts are integrated or planned:
+
 - Spring Boot
 - AsciiDoctor integration, with UML and different outputs
 - Onion architecture
 - Docker build/push
 
 Next:
+
 - reactive programming
 
 An up to date documentation is https://haf-tech.github.io/blueprint/[online] available.
