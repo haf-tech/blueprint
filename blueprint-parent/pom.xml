@@ -230,25 +230,25 @@
 			<!-- ####################################################### -->
 
 			<!-- JaCoCo Problems with the agent and multi module projects -->
-			<!-- <plugin> -->
-			<!-- <groupId>org.jacoco</groupId> -->
-			<!-- <artifactId>jacoco-maven-plugin</artifactId> -->
-			<!-- <version>0.7.9</version> -->
-			<!-- <executions> -->
-			<!-- <execution> -->
-			<!-- <goals> -->
-			<!-- <goal>prepare-agent</goal> -->
-			<!-- </goals> -->
-			<!-- </execution> -->
-			<!-- <execution> -->
-			<!-- <id>report</id> -->
-			<!-- <phase>test</phase> -->
-			<!-- <goals> -->
-			<!-- <goal>report</goal> -->
-			<!-- </goals> -->
-			<!-- </execution> -->
-			<!-- </executions> -->
-			<!-- </plugin> -->
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.7.9</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>report</id>
+						<phase>test</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 
 			<!-- Cobertura, especially JavaNCC does not cope with Java 8! -->
 			<!-- <plugin> -->
