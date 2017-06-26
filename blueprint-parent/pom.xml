@@ -31,6 +31,14 @@
 			Jackson dependencies -->
 		<spring.boot.version>1.5.2.RELEASE</spring.boot.version>
 
+		<!-- Test/Sonar -->
+		<!-- The destination file for the code coverage report has to be set to 
+			the same value in the parent pom and in each module pom. Then JaCoCo will 
+			add up information in the same report, so that, it will give the cross-module 
+			code coverage. -->
+		<sonar.jacoco.itReportPath>${project.basedir}/../target/jacoco-bp.exec</sonar.jacoco.itReportPath>
+
+
 		<!-- AsciiDoctor: Maven build date format -->
 		<asciidoctorj.version>1.5.5</asciidoctorj.version>
 		<asciidoctorj.pdf.version>1.5.0-alpha.11</asciidoctorj.pdf.version>
@@ -234,6 +242,9 @@
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
 				<version>0.7.9</version>
+				<configuration>
+					<append>true</append>
+				</configuration>
 				<executions>
 					<execution>
 						<goals>
@@ -242,7 +253,7 @@
 					</execution>
 					<execution>
 						<id>report</id>
-						<phase>test</phase>
+						<phase>verify</phase>
 						<goals>
 							<goal>report</goal>
 						</goals>
@@ -305,4 +316,6 @@
 			</plugins>
 		</pluginManagement>
 	</build>
+	
+	
 </project>
