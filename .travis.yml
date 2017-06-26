@@ -18,8 +18,8 @@ before_install:
 # Build and generate documentation, including code coverage
 script:
  - cd blueprint-parent && mvn -B -V clean install
- - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar
  - cp -R target/generated-docs/*/html/* ../output
+ - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar
 
 # Push the generated HTML docu to GitHub pages
 after_success:
