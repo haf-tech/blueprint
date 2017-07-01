@@ -39,7 +39,8 @@
 			<!-- 
 		<sonar.jacoco.itReportPath>${project.build.directory}/jacoco-it.exec</sonar.jacoco.itReportPath>
 			 -->
-		<sonar.jacoco.reportPath>${project.build.directory}/jacoco-it.exec</sonar.jacoco.reportPath>
+		<sonar.jacoco.reportPaths>${project.basedir}/../target/jacoco-it.exec</sonar.jacoco.reportPaths>
+		<sonar.reportsPath>${sonar.jacoco.reportPaths}</sonar.reportsPath>
 
 
 		<!-- AsciiDoctor: Maven build date format -->

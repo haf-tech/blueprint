@@ -58,7 +58,7 @@
 						to the same value in the parent pom and in each module pom. Then JaCoCo will 
 						add up information in the same report, so that, it will give the cross-module 
 						code coverage. -->
-					<destFile>${sonar.jacoco.reportPath}</destFile>
+					<destFile>${sonar.reportsPath}</destFile>
 				</configuration>
 			</plugin>
 		</plugins>
