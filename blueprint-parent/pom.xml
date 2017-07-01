@@ -36,7 +36,8 @@
 			the same value in the parent pom and in each module pom. Then JaCoCo will 
 			add up information in the same report, so that, it will give the cross-module 
 			code coverage. -->
-		<sonar.jacoco.itReportPath>${project.basedir}/../target/jacoco-it.exec</sonar.jacoco.itReportPath>
+		<sonar.jacoco.itReportPath>${project.build.directory}/jacoco-it.exec</sonar.jacoco.itReportPath>
+		<sonar.jacoco.reportPath>${project.build.directory}/jacoco-it.exec</sonar.jacoco.reportPath>
 
 
 		<!-- AsciiDoctor: Maven build date format -->
@@ -136,6 +137,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
+				<!-- 
 				<executions>
 					<execution>
 						<goals>
@@ -143,6 +145,7 @@
 						</goals>
 					</execution>
 				</executions>
+				 -->
 			</plugin>
 
 			<!-- JaCoCo Problems with the agent and multi module projects -->
