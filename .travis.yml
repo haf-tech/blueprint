@@ -27,7 +27,7 @@ script:
  # prepare the docs to output
  - cp -R target/generated-docs/*/html/* ../output
  # test coverage
- - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar
+ - mvn org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar
 
 # Push the generated HTML docu to GitHub pages
 after_success:
