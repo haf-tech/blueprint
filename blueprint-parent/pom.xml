@@ -36,7 +36,9 @@
 			the same value in the parent pom and in each module pom. Then JaCoCo will 
 			add up information in the same report, so that, it will give the cross-module 
 			code coverage. -->
+			<!-- 
 		<sonar.jacoco.itReportPath>${project.build.directory}/jacoco-it.exec</sonar.jacoco.itReportPath>
+			 -->
 		<sonar.jacoco.reportPath>${project.build.directory}/jacoco-it.exec</sonar.jacoco.reportPath>
 
 
