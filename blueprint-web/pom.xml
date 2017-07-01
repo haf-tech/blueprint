@@ -21,7 +21,7 @@
 		<dropwizard.metrics.version>3.2.2</dropwizard.metrics.version>
 
 		<!-- Docker -->
-		<spotify.docker.version>1.3.0</spotify.docker.version>
+		<spotify.docker.version>1.3.1</spotify.docker.version>
 		<docker.src.dir>${project.basedir}/src/main/docker</docker.src.dir>
 		<docker.build.dir>${project.build.directory}/docker</docker.build.dir>
 		<docker.image.prefix>${project.groupId}</docker.image.prefix>
@@ -106,7 +106,6 @@
 					class - build in dependency resolver for Spring versions -->
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-				<version>${spring.boot.version}</version>
 				<executions>
 					<execution>
 						<goals>
@@ -128,12 +127,15 @@
 						to the same value in the parent pom and in each module pom. Then JaCoCo will 
 						add up information in the same report, so that, it will give the cross-module 
 						code coverage. -->
-					<destFile>${project.basedir}/../target/jacoco-bp.exec</destFile>
+					<destFile>${project.basedir}/../target/jacoco-it.exec</destFile>
 				</configuration>
 			</plugin>
 		</plugins>
 	</build>
 
+	<!-- ####################################################### -->
+	<!-- ##################### Profiles ######################## -->
+	<!-- ####################################################### -->
 	<profiles>
 		<!-- Profile: dockerbuild, to avoid docker build execution in normal build 
 			process -->
@@ -147,9 +149,10 @@
 					<!-- ####################################################### -->
 
 
-					<!-- Docker plugin: mvn dockerfile:build For the docker container is 
+					<!-- Docker plugin: mvn dockerfile:build. For the docker container is 
 						it necessary, to have all relevant files (Dockerfile, jar(s)) into a working 
-						directory. For this we use maven-dependency-plugin -->
+						directory (${docker.build.directory}). For this reason we use maven-dresources/ependency-plugin 
+						to copy the files -->
 
 					<!-- Copy the Dockerfile into target docker directory. -->
 					<plugin>
@@ -200,7 +203,7 @@
 											<destFileName>${project.artifactId}.jar</destFileName>
 										</artifactItem>
 									</artifactItems>
-									<outputDirectory>${docker.build.directory}</outputDirectory>
+									<outputDirectory>${docker.build.dir}</outputDirectory>
 									<overWriteReleases>true</overWriteReleases>
 									<overWriteSnapshots>true</overWriteSnapshots>
 								</configuration>
@@ -226,8 +229,6 @@
 							<repository>${docker.repository}</repository>
 							<tag>${project.version}</tag>
 							<contextDirectory>${docker.build.dir}</contextDirectory>
-							<!-- <resources> <resource> <targetPath>/</targetPath> <directory>${project.build.directory}</directory> 
-								<include>${project.build.finalName}.jar</include> </resource> </resources> -->
 						</configuration>
 					</plugin>
 				</plugins>

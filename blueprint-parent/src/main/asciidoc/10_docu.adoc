@@ -31,5 +31,10 @@ This chapters gives an overview over of the documentation and how is it generate
 |===
 
 
+=== Generation
+
+The documentation will be generated with maven using the profile *documentation*:
+
+`mvn generate-resources -Pdocumentation`
 
 

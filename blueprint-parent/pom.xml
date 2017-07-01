@@ -36,7 +36,7 @@
 			the same value in the parent pom and in each module pom. Then JaCoCo will 
 			add up information in the same report, so that, it will give the cross-module 
 			code coverage. -->
-		<sonar.jacoco.itReportPath>${project.basedir}/../target/jacoco-bp.exec</sonar.jacoco.itReportPath>
+		<sonar.jacoco.itReportPath>${project.basedir}/../target/jacoco-it.exec</sonar.jacoco.itReportPath>
 
 
 		<!-- AsciiDoctor: Maven build date format -->
@@ -105,6 +105,10 @@
 		</dependency>
 	</dependencies>
 
+
+	<!-- ####################################################### -->
+	<!-- ############### General Build steps ################### -->
+	<!-- ####################################################### -->
 	<build>
 		<plugins>
 
@@ -126,116 +130,20 @@
 
 
 			<!-- ####################################################### -->
-			<!-- ################# Documentation ####################### -->
-			<!-- ####################################################### -->
-
-			<!-- Swagger2Markup plugin to generate the swagger AsciiDoctor files <plugin> 
-				<groupId>io.github.swagger2markup</groupId> <artifactId>swagger2markup-maven-plugin</artifactId> 
-				<version>${swagger2markup.version}</version> <dependencies> <dependency> 
-				<groupId>io.github.swagger2markup</groupId> <artifactId>swagger2markup-import-files-ext</artifactId> 
-				<version>${swagger2markup.version}</version> </dependency> <dependency> <groupId>io.github.swagger2markup</groupId> 
-				<artifactId>swagger2markup-spring-restdocs-ext</artifactId> <version>${swagger2markup.version}</version> 
-				</dependency> </dependencies> <configuration> <swaggerInput>${swagger.input}</swaggerInput> 
-				<outputDir>${asciidoc.gen.dir}</outputDir> <config> <swagger2markup.markupLanguage>ASCIIDOC</swagger2markup.markupLanguage> 
-				<swagger2markup.pathsGroupedBy>TAGS</swagger2markup.pathsGroupedBy> <swagger2markup.extensions.dynamicOverview.contentPath>${project.basedir}/src/docs/asciidoc/extensions/overview</swagger2markup.extensions.dynamicOverview.contentPath> 
-				<swagger2markup.extensions.dynamicDefinitions.contentPath>${project.basedir}/src/docs/asciidoc/extensions/definitions</swagger2markup.extensions.dynamicDefinitions.contentPath> 
-				<swagger2markup.extensions.dynamicPaths.contentPath>${project.basedir}/src/docs/asciidoc/extensions/paths</swagger2markup.extensions.dynamicPaths.contentPath> 
-				<swagger2markup.extensions.dynamicSecurity.contentPath>${project.basedir}src/docs/asciidoc/extensions/security/</swagger2markup.extensions.dynamicSecurity.contentPath> 
-				<swagger2markup.extensions.springRestDocs.snippetBaseUri>${swagger.snippetOutput.dir}</swagger2markup.extensions.springRestDocs.snippetBaseUri> 
-				<swagger2markup.extensions.springRestDocs.defaultSnippets>true</swagger2markup.extensions.springRestDocs.defaultSnippets> 
-				</config> </configuration> <executions> <execution> <phase>generate-resources</phase> 
-				<goals> <goal>convertSwagger2markup</goal> </goals> </execution> </executions> 
-				</plugin> -->
-
-
-
-			<!-- AsciiDoctor - http://asciidoctor.org/ AsciiDoctorJ Extension: https://github.com/asciidoctor/asciidoctorj -->
-			<plugin>
-				<groupId>org.asciidoctor</groupId>
-				<artifactId>asciidoctor-maven-plugin</artifactId>
-				<version>1.5.5</version>
-				<dependencies>
-					<!-- AsciiDoctorJ enhancement to support PDF and Diagram output -->
-					<dependency>
-						<groupId>org.asciidoctor</groupId>
-						<artifactId>asciidoctorj</artifactId>
-						<version>${asciidoctorj.version}</version>
-					</dependency>
-					<dependency>
-						<groupId>org.asciidoctor</groupId>
-						<artifactId>asciidoctorj-pdf</artifactId>
-						<version>${asciidoctorj.pdf.version}</version>
-					</dependency>
-					<dependency>
-						<groupId>org.asciidoctor</groupId>
-						<artifactId>asciidoctorj-diagram</artifactId>
-						<version>${asciidoctorj.diagram.version}</version>
-					</dependency>
-				</dependencies>
-				<executions>
-					<!-- Different executions to generate different output formats -->
-					<execution>
-						<id>output-html</id>
-						<phase>generate-resources</phase>
-						<goals>
-							<goal>process-asciidoc</goal>
-						</goals>
-						<configuration>
-							<backend>html</backend>
-							<outputDirectory>${asciidoc.base.output.dir}/html</outputDirectory>
-						</configuration>
-					</execution>
-					<execution>
-						<id>output-docbook</id>
-						<phase>generate-resources</phase>
-						<goals>
-							<goal>process-asciidoc</goal>
-						</goals>
-						<configuration>
-							<backend>docbook</backend>
-							<doctype>book</doctype>
-							<outputDirectory>${asciidoc.base.output.dir}/dockbook</outputDirectory>
-						</configuration>
-					</execution>
-					<!-- -->
-					<execution>
-						<id>output-pdf</id>
-						<phase>generate-resources</phase>
-						<goals>
-							<goal>process-asciidoc</goal>
-						</goals>
-						<configuration>
-							<backend>pdf</backend>
-							<outputDirectory>${asciidoc.base.output.dir}/pdf</outputDirectory>
-							<attributes>
-								<!-- expects images always under src/main/asciidoc <imagesdir>../../../target/generated-docs/${project.version}/images/</imagesdir> -->
-								<imagesdir>${project.build.directory}/generated-docs/${project.version}/pdf/images/</imagesdir>
-							</attributes>
-						</configuration>
-					</execution>
-				</executions>
-				<!-- General configuration for all doctypes -->
-				<configuration>
-					<!-- Output doc in separate version directory -->
-					<outputDirectory>${asciidoc.base.output.dir}</outputDirectory>
-					<requires>
-						<require>asciidoctor-diagram</require>
-					</requires>
-					<attributes>
-						<project-version>${project.version}</project-version>
-						<revnumber>${project.version}</revnumber>
-						<revdate>${maven.build.timestamp}</revdate>
-						<organization>${project.organization.name}</organization>
-						<generated>${asciidoc.gen.dir}</generated>
-					</attributes>
-				</configuration>
-			</plugin>
-
-
-
-			<!-- ####################################################### -->
 			<!-- ################# Test Coverage ####################### -->
 			<!-- ####################################################### -->
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>test</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 
 			<!-- JaCoCo Problems with the agent and multi module projects -->
 			<plugin>
@@ -255,7 +163,8 @@
 						<id>report</id>
 						<phase>verify</phase>
 						<goals>
-							<goal>report</goal>
+							<!-- Aggregate all reports from the different modules -->
+							<goal>report-aggregate</goal>
 						</goals>
 					</execution>
 				</executions>
@@ -277,6 +186,33 @@
 		</plugins>
 		<pluginManagement>
 			<plugins>
+
+
+				<!-- ####################################################### -->
+				<!-- ################# Test Coverage ####################### -->
+				<!-- ####################################################### -->
+
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-surefire-plugin</artifactId>
+					<version>2.20</version>
+				</plugin>
+
+
+				<!-- ####################################################### -->
+				<!-- ################## Spring Boot ######################## -->
+				<!-- ####################################################### -->
+
+				<plugin>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-maven-plugin</artifactId>
+					<version>${spring.boot.version}</version>
+				</plugin>
+
+				<!-- ####################################################### -->
+				<!-- ################### Eclipse M2E ####################### -->
+				<!-- ####################################################### -->
+
 				<!--This plugin's configuration is used to store Eclipse m2e settings 
 					only. It has no influence on the Maven build itself. -->
 				<plugin>
@@ -316,6 +252,127 @@
 			</plugins>
 		</pluginManagement>
 	</build>
-	
-	
+
+
+	<!-- ####################################################### -->
+	<!-- #################### Profiles ######################### -->
+	<!-- ####################################################### -->
+
+	<profiles>
+		<!-- Profile for generating documentation -->
+		<profile>
+			<id>documentation</id>
+			<build>
+				<plugins>
+
+					<!-- ####################################################### -->
+					<!-- ################# Documentation ####################### -->
+					<!-- ####################################################### -->
+
+					<!-- Swagger2Markup plugin to generate the swagger AsciiDoctor files 
+						<plugin> <groupId>io.github.swagger2markup</groupId> <artifactId>swagger2markup-maven-plugin</artifactId> 
+						<version>${swagger2markup.version}</version> <dependencies> <dependency> 
+						<groupId>io.github.swagger2markup</groupId> <artifactId>swagger2markup-import-files-ext</artifactId> 
+						<version>${swagger2markup.version}</version> </dependency> <dependency> <groupId>io.github.swagger2markup</groupId> 
+						<artifactId>swagger2markup-spring-restdocs-ext</artifactId> <version>${swagger2markup.version}</version> 
+						</dependency> </dependencies> <configuration> <swaggerInput>${swagger.input}</swaggerInput> 
+						<outputDir>${asciidoc.gen.dir}</outputDir> <config> <swagger2markup.markupLanguage>ASCIIDOC</swagger2markup.markupLanguage> 
+						<swagger2markup.pathsGroupedBy>TAGS</swagger2markup.pathsGroupedBy> <swagger2markup.extensions.dynamicOverview.contentPath>${project.basedir}/src/docs/asciidoc/extensions/overview</swagger2markup.extensions.dynamicOverview.contentPath> 
+						<swagger2markup.extensions.dynamicDefinitions.contentPath>${project.basedir}/src/docs/asciidoc/extensions/definitions</swagger2markup.extensions.dynamicDefinitions.contentPath> 
+						<swagger2markup.extensions.dynamicPaths.contentPath>${project.basedir}/src/docs/asciidoc/extensions/paths</swagger2markup.extensions.dynamicPaths.contentPath> 
+						<swagger2markup.extensions.dynamicSecurity.contentPath>${project.basedir}src/docs/asciidoc/extensions/security/</swagger2markup.extensions.dynamicSecurity.contentPath> 
+						<swagger2markup.extensions.springRestDocs.snippetBaseUri>${swagger.snippetOutput.dir}</swagger2markup.extensions.springRestDocs.snippetBaseUri> 
+						<swagger2markup.extensions.springRestDocs.defaultSnippets>true</swagger2markup.extensions.springRestDocs.defaultSnippets> 
+						</config> </configuration> <executions> <execution> <phase>generate-resources</phase> 
+						<goals> <goal>convertSwagger2markup</goal> </goals> </execution> </executions> 
+						</plugin> -->
+
+
+
+					<!-- AsciiDoctor - http://asciidoctor.org/ AsciiDoctorJ Extension: https://github.com/asciidoctor/asciidoctorj -->
+					<plugin>
+						<groupId>org.asciidoctor</groupId>
+						<artifactId>asciidoctor-maven-plugin</artifactId>
+						<version>1.5.5</version>
+						<dependencies>
+							<!-- AsciiDoctorJ enhancement to support PDF and Diagram output -->
+							<dependency>
+								<groupId>org.asciidoctor</groupId>
+								<artifactId>asciidoctorj</artifactId>
+								<version>${asciidoctorj.version}</version>
+							</dependency>
+							<dependency>
+								<groupId>org.asciidoctor</groupId>
+								<artifactId>asciidoctorj-pdf</artifactId>
+								<version>${asciidoctorj.pdf.version}</version>
+							</dependency>
+							<dependency>
+								<groupId>org.asciidoctor</groupId>
+								<artifactId>asciidoctorj-diagram</artifactId>
+								<version>${asciidoctorj.diagram.version}</version>
+							</dependency>
+						</dependencies>
+						<executions>
+							<!-- Different executions to generate different output formats -->
+							<execution>
+								<id>output-html</id>
+								<phase>generate-resources</phase>
+								<goals>
+									<goal>process-asciidoc</goal>
+								</goals>
+								<configuration>
+									<backend>html</backend>
+									<outputDirectory>${asciidoc.base.output.dir}/html</outputDirectory>
+								</configuration>
+							</execution>
+							<execution>
+								<id>output-docbook</id>
+								<phase>generate-resources</phase>
+								<goals>
+									<goal>process-asciidoc</goal>
+								</goals>
+								<configuration>
+									<backend>docbook</backend>
+									<doctype>book</doctype>
+									<outputDirectory>${asciidoc.base.output.dir}/dockbook</outputDirectory>
+								</configuration>
+							</execution>
+							<!-- -->
+							<execution>
+								<id>output-pdf</id>
+								<phase>generate-resources</phase>
+								<goals>
+									<goal>process-asciidoc</goal>
+								</goals>
+								<configuration>
+									<backend>pdf</backend>
+									<outputDirectory>${asciidoc.base.output.dir}/pdf</outputDirectory>
+									<attributes>
+										<!-- expects images always under src/main/asciidoc <imagesdir>../../../target/generated-docs/${project.version}/images/</imagesdir> -->
+										<imagesdir>${project.build.directory}/generated-docs/${project.version}/pdf/images/</imagesdir>
+									</attributes>
+								</configuration>
+							</execution>
+						</executions>
+						<!-- General configuration for all doctypes -->
+						<configuration>
+							<!-- Output doc in separate version directory -->
+							<outputDirectory>${asciidoc.base.output.dir}</outputDirectory>
+							<requires>
+								<require>asciidoctor-diagram</require>
+							</requires>
+							<attributes>
+								<project-version>${project.version}</project-version>
+								<revnumber>${project.version}</revnumber>
+								<revdate>${maven.build.timestamp}</revdate>
+								<organization>${project.organization.name}</organization>
+								<generated>${asciidoc.gen.dir}</generated>
+							</attributes>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+
 </project>

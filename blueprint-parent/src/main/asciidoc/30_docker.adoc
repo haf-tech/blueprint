@@ -6,7 +6,7 @@ This application provides also a docker image.
 
 === Docker Maven
 
-For creating the docker image the dockerfile-maven-plugin is used. This plugin expects in a working directory (contextDirectory) all the necessary files, like Dockerfile, libs/jars etc. To achieve this, we used the maven-resources-plugin and maven-dependency-plugin to copy the Dockerfile and builded jar file into the context directory.
+For creating the docker image the https://github.com/spotify/dockerfile-maven[dockerfile-maven-plugin] is used. This plugin expects in a working directory (contextDirectory) all the necessary files, like Dockerfile, libs/jars etc. To achieve this, we used the https://maven.apache.org/plugins/maven-resources-plugin/[maven-resources-plugin] and https://maven.apache.org/plugins/maven-dependency-plugin/[maven-dependency-plugin] to copy the Dockerfile and builded jar file(s) into the context directory.
 
 See the blueprint-web/pom.xml for details.
 To build the docker image run use the profile *dockerbuild*:

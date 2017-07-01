@@ -1,3 +1,6 @@
+# .travis.yml
+# Travis-CI configuration file
+
 sudo: required
 
 addons:
@@ -17,8 +20,13 @@ before_install:
 
 # Build and generate documentation, including code coverage
 script:
+ # general build
  - cd blueprint-parent && mvn -B -V clean install
+ # generate documentation
+ - mvn -B -V generate-resources -Pdocumentation
+ # prepare the docs to output
  - cp -R target/generated-docs/*/html/* ../output
+ # test coverage
  - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar
 
 # Push the generated HTML docu to GitHub pages
