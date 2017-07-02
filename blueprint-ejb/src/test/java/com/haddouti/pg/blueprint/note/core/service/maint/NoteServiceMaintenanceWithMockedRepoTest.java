@@ -27,7 +27,7 @@ import com.haddouti.pg.blueprint.note.core.domain.NoteAttachment;
  * 
  * Hint: Attachments are currently out of scope.
  */
-public class NoteServiceMaintenanceWithMockedRepoTestUnit {
+public class NoteServiceMaintenanceWithMockedRepoTest {
 
 	@InjectMocks
 	private NoteServiceMaintenance service = new NoteServiceMaintenance();
@@ -106,6 +106,16 @@ public class NoteServiceMaintenanceWithMockedRepoTestUnit {
 		Note note = new Note();
 		note.setTitle("New Note");
 		note.setContent("Content");
+
+		Assert.assertNotNull(service.persistNote(note));
+	}
+
+	@Test
+	public void testUpdateNote() {
+		Note note = new Note();
+		note.setTitle("New Note");
+		note.setContent("Content");
+		note.setId(1L);
 
 		Assert.assertNotNull(service.persistNote(note));
 	}

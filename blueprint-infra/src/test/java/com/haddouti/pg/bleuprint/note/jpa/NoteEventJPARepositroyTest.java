@@ -4,12 +4,14 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.haddouti.pg.blueprint.note.core.api.NoteEvent;
+import com.haddouti.pg.blueprint.note.infra.monitoring.NoteEventMonitoring;
 import com.haddouti.pg.blueprint.note.jpa.JPAPersistenceConfig;
 
 /**
@@ -20,7 +22,11 @@ import com.haddouti.pg.blueprint.note.jpa.JPAPersistenceConfig;
 @RunWith(SpringRunner.class)
 @Transactional
 @ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = { JPAPersistenceConfig.class })
-public class NoteEventJPARepositroyTestUnit {
+public class NoteEventJPARepositroyTest {
+
+	// Mock this bean because the impl. is in an upper layer (web)
+	@MockBean
+	private NoteEventMonitoring eventMonitoring;
 
 	@Autowired
 	@Qualifier("jpaNoteEventRepo")

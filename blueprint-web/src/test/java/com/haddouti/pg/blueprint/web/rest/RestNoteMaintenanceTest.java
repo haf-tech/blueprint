@@ -3,6 +3,7 @@ package com.haddouti.pg.blueprint.web.rest;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertNotNull;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -11,10 +12,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.io.IOException;
+import java.io.StringWriter;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 
 import javax.inject.Inject;
+import javax.transaction.Transactional;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Marshaller;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -45,10 +50,13 @@ import com.haddouti.pg.blueprint.web.rest.domain.NoteRequest;
 // use own existing application configuration
 @SpringBootTest(classes = Application.class)
 @WebAppConfiguration
-public class RestNoteMaintenanceTestUnit {
+public class RestNoteMaintenanceTest {
 
-	private MediaType contentType = new MediaType(MediaType.APPLICATION_JSON.getType(),
+	private MediaType contentTypeJson = new MediaType(MediaType.APPLICATION_JSON.getType(),
 			MediaType.APPLICATION_JSON.getSubtype(), Charset.forName("utf8"));
+
+	private MediaType contentTypeXml = new MediaType(MediaType.APPLICATION_XML.getType(),
+			MediaType.APPLICATION_XML.getSubtype(), Charset.forName("utf8"));
 
 	private MockMvc mockMvc;
 
@@ -89,12 +97,12 @@ public class RestNoteMaintenanceTestUnit {
 	public void testGetAllNotes() throws Exception {
 
 		mockMvc.perform(get("/note/v1/note")).andExpect(status().isOk()).andDo(print())
-				.andExpect(content().contentType(contentType))
+				.andExpect(content().contentType(contentTypeJson))
 				.andExpect(jsonPath("$.items[0].title", is(note.getTitle())));
 	}
 
 	@Test
-	public void testPutNote() throws Exception {
+	public void testPutNoteXml() throws Exception {
 
 		final NoteRequest req = new NoteRequest();
 		NoteItem noteItem = new NoteItem();
@@ -102,18 +110,78 @@ public class RestNoteMaintenanceTestUnit {
 		noteItem.setContent("New Content 2");
 		req.getItems().add(noteItem);
 
+		final String xml = xml(NoteRequest.class, req);
+
+		mockMvc.perform(put("/note/v1/note").content(xml).contentType(contentTypeXml)).andDo(print())
+				.andExpect(status().isOk()).andExpect(content().contentType(contentTypeJson))
+				.andExpect(jsonPath("$.items", hasSize(1)));
+	}
+
+	@Test
+	public void testPutNoteJson() throws Exception {
+
+		final NoteRequest req = new NoteRequest();
+		NoteItem noteItem = new NoteItem();
+		noteItem.setTitle("New Title 3");
+		noteItem.setContent("New Content 3");
+		req.getItems().add(noteItem);
+
 		final String json = json(req);
 
-		// failed: the request object is empty at the REST endpoint (marshal
-		// problem)
-		mockMvc.perform(put("/note/v1/note").content(json).contentType(contentType)).andDo(print())
-				.andExpect(status().isOk()).andExpect(content().contentType(contentType))
-				.andExpect(jsonPath("$.items", hasSize(2)));
+		mockMvc.perform(put("/note/v1/note").content(json).contentType(contentTypeJson)).andDo(print())
+				.andExpect(status().isOk()).andExpect(content().contentType(contentTypeJson))
+				.andExpect(jsonPath("$.items", hasSize(1)));
+	}
+
+	@Test
+	@Transactional
+	public void testDeleteNoteJson() throws Exception {
+
+		final NoteRequest req = new NoteRequest();
+		NoteItem noteItem = new NoteItem();
+		noteItem.setId(4L);
+		noteItem.setTitle("New Title 3");
+		noteItem.setContent("New Content 3");
+		req.getItems().add(noteItem);
+
+		final String json = json(req);
+
+		// retrieve
+		mockMvc.perform(get("/note/v1/note")).andExpect(status().isOk()).andDo(print())
+				.andExpect(content().contentType(contentTypeJson)).andExpect(jsonPath("$.items", hasSize(1)));
+
+		// add
+		mockMvc.perform(put("/note/v1/note").content(json).contentType(contentTypeJson)).andDo(print())
+				.andExpect(status().isOk()).andExpect(content().contentType(contentTypeJson))
+				.andExpect(jsonPath("$.items", hasSize(1)));
+
+		// retrieve
+		mockMvc.perform(get("/note/v1/note")).andExpect(status().isOk()).andDo(print())
+				.andExpect(content().contentType(contentTypeJson)).andExpect(jsonPath("$.items", hasSize(2)));
+
+		// delete
+		mockMvc.perform(delete("/note/v1/note").content(json).contentType(contentTypeJson)).andDo(print())
+				.andExpect(status().isOk()).andExpect(content().contentType(contentTypeJson))
+				.andExpect(jsonPath("$.items", hasSize(0)));
+
+		// retrieve
+		mockMvc.perform(get("/note/v1/note")).andExpect(status().isOk()).andDo(print())
+				.andExpect(content().contentType(contentTypeJson)).andExpect(jsonPath("$.items", hasSize(1)));
 	}
 
 	private String json(Object o) throws IOException {
 		MockHttpOutputMessage mockHttpOutputMessage = new MockHttpOutputMessage();
 		this.mappingJackson2HttpMessageConverter.write(o, MediaType.APPLICATION_JSON, mockHttpOutputMessage);
 		return mockHttpOutputMessage.getBodyAsString();
+	}
+
+	private String xml(Class clazz, Object o) throws Exception {
+		final JAXBContext jbc = JAXBContext.newInstance(clazz);
+
+		Marshaller m = jbc.createMarshaller();
+		StringWriter s = new StringWriter();
+		m.marshal(o, s);
+		System.out.println(s.toString());
+		return s.toString();
 	}
 }

@@ -1,0 +1,80 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.haddouti.pg</groupId>
+		<artifactId>blueprint-parent</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>blueprint-spring-parent</artifactId>
+	<packaging>pom</packaging>
+
+	<name>Blueprint Spring parent</name>
+	<description>Parent project holding the spring facets</description>
+
+	<modules>
+		<module>../blueprint-infra</module>
+		<module>../blueprint-web</module>
+	</modules>
+
+	<properties>
+		<spring.version>4.3.9.RELEASE</spring.version>
+		<!-- Spring Boot. Use only this version. 1.5.4 has problems with Actuator and 
+			Jackson dependencies -->
+		<spring.boot.version>1.5.2.RELEASE</spring.boot.version>
+	</properties>
+
+	<dependencyManagement>
+		<dependencies>
+
+			<!-- ************ Spring *********** -->
+			<!-- Consider: spring-boot-dependencies should be the last spring lib. 
+				To override some other spring modules, place them BEFORE with scope=import 
+				and type=pom -->
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-dependencies</artifactId>
+				<version>1.5.2.RELEASE</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<dependencies>
+		<!-- Spring -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+
+		<pluginManagement>
+			<plugins>
+
+				<!-- ####################################################### -->
+				<!-- ################## Spring Boot ######################## -->
+				<!-- ####################################################### -->
+
+				<plugin>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-maven-plugin</artifactId>
+					<version>${spring.boot.version}</version>
+				</plugin>
+
+			</plugins>
+		</pluginManagement>
+	</build>
+
+</project>

@@ -14,8 +14,7 @@
 
 	<modules>
 		<module>../blueprint-ejb</module>
-		<module>../blueprint-infra</module>
-		<module>../blueprint-web</module>
+		<module>../blueprint-spring-parent</module>
 	</modules>
 
 	<properties>
@@ -26,19 +25,14 @@
 		<mockito.version>2.8.47</mockito.version>
 
 
-		<spring.version>4.3.9.RELEASE</spring.version>
-		<!-- Spring Boot. Only this version. 1.5.4 has problems with Actuator and 
-			Jackson dependencies -->
-		<spring.boot.version>1.5.2.RELEASE</spring.boot.version>
+
 
 		<!-- Test/Sonar -->
 		<!-- The destination file for the code coverage report has to be set to 
 			the same value in the parent pom and in each module pom. Then JaCoCo will 
 			add up information in the same report, so that, it will give the cross-module 
 			code coverage. -->
-			<!-- 
-		<sonar.jacoco.itReportPath>${project.build.directory}/jacoco-it.exec</sonar.jacoco.itReportPath>
-			 -->
+		<!-- <sonar.jacoco.itReportPath>${project.build.directory}/jacoco-it.exec</sonar.jacoco.itReportPath> -->
 		<sonar.jacoco.reportPaths>${project.basedir}/../target/jacoco-it.exec</sonar.jacoco.reportPaths>
 		<sonar.reportsPath>${sonar.jacoco.reportPaths}</sonar.reportsPath>
 
@@ -59,17 +53,7 @@
 
 	<dependencyManagement>
 		<dependencies>
-			<!-- ************ Spring *********** -->
-			<!-- Consider: spring-boot-dependencies should be the last spring lib. 
-				To override some other spring modules, place them BEFORE with scope=import 
-				and type=pom -->
-			<dependency>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-dependencies</artifactId>
-				<version>1.5.2.RELEASE</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
+
 
 
 			<!-- Test -->
@@ -90,12 +74,6 @@
 	</dependencyManagement>
 
 	<dependencies>
-		<!-- Spring -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter</artifactId>
-		</dependency>
-
 		<!-- Test -->
 		<dependency>
 			<groupId>junit</groupId>
@@ -140,46 +118,10 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<!-- 
-				<executions>
-					<execution>
-						<goals>
-							<goal>test</goal>
-						</goals>
-					</execution>
-				</executions>
-				 -->
+				<!-- <executions> <execution> <goals> <goal>test</goal> </goals> </execution> 
+					</executions> -->
 			</plugin>
 
-			<!-- JaCoCo Problems with the agent and multi module projects -->
-			<plugin>
-				<groupId>org.jacoco</groupId>
-				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>0.7.9</version>
-				<configuration>
-					<append>true</append>
-					<!-- The destination file for the code coverage report has to be set 
-						to the same value in the parent pom and in each module pom. Then JaCoCo will 
-						add up information in the same report, so that, it will give the cross-module 
-						code coverage. -->
-					<destFile>${sonar.reportsPath}</destFile>
-				</configuration>
-				<executions>
-					<execution>
-						<goals>
-							<goal>prepare-agent</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>report</id>
-						<phase>verify</phase>
-						<goals>
-							<!-- Aggregate all reports from the different modules -->
-							<goal>report-aggregate</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
 
 			<!-- Cobertura, especially JavaNCC does not cope with Java 8! -->
 			<!-- <plugin> -->
@@ -209,16 +151,12 @@
 					<version>2.20</version>
 				</plugin>
 
-
-				<!-- ####################################################### -->
-				<!-- ################## Spring Boot ######################## -->
-				<!-- ####################################################### -->
-
 				<plugin>
-					<groupId>org.springframework.boot</groupId>
-					<artifactId>spring-boot-maven-plugin</artifactId>
-					<version>${spring.boot.version}</version>
+					<groupId>org.jacoco</groupId>
+					<artifactId>jacoco-maven-plugin</artifactId>
+					<version>0.7.9</version>
 				</plugin>
+
 
 				<!-- ####################################################### -->
 				<!-- ################### Eclipse M2E ####################### -->

@@ -5,8 +5,11 @@ import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.haddouti.pg.blueprint.note.core.domain.Note;
@@ -44,8 +47,9 @@ public class RestNoteMaintenance {
 		return response;
 	}
 
-	@RequestMapping(method = RequestMethod.PUT, path = "/note")
-	public NoteResponse putNote(NoteRequest req) {
+	@RequestMapping(method = RequestMethod.PUT, path = "/note", consumes = { MediaType.APPLICATION_JSON_VALUE,
+			MediaType.APPLICATION_XML_VALUE })
+	public @ResponseBody NoteResponse putNote(@RequestBody NoteRequest req) {
 
 		final List<Long> noteIds = req.getItems().stream().map(MapUtil::toNote).map(service::persistNote)
 				.collect(Collectors.toList());
@@ -69,20 +73,29 @@ public class RestNoteMaintenance {
 		return response;
 	}
 
-	@RequestMapping(method = RequestMethod.DELETE, path = "/note")
-	public NoteResponse deleteNote(NoteRequest req) {
+	@RequestMapping(method = RequestMethod.DELETE, path = "/note", consumes = { MediaType.APPLICATION_JSON_VALUE,
+			MediaType.APPLICATION_XML_VALUE })
+	public @ResponseBody NoteResponse deleteNote(@RequestBody NoteRequest req) {
 
-		req.getItems().stream().map(MapUtil::toNote).map(service::deleteNote);
+		List<Boolean> res = req.getItems().stream().map(MapUtil::toNote).map(n -> n.getId())
+				.map(service::deleteNoteById).collect(Collectors.toList());
 
 		NoteResponse response = new NoteResponse();
 		StatusCode statusCode = new StatusCode();
 		statusCode.setCode("0");
 		statusCode.setText("OK");
 		response.getResultStatus().add(statusCode);
-		statusCode = new StatusCode();
-		statusCode.setCode("10");
-		statusCode.setText("Deleted.");
-		response.getResultStatus().add(statusCode);
+		res.forEach(b -> {
+			StatusCode sc = new StatusCode();
+			if (b) {
+				sc.setCode("10");
+				sc.setText("Deleted.");
+			} else {
+				sc.setCode("50");
+				sc.setText("Deletion failed.");
+			}
+			response.getResultStatus().add(sc);
+		});
 
 		return response;
 	}

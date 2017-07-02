@@ -11,6 +11,7 @@ import javax.persistence.Id;
  * Entity for note event in JPA context.
  *
  */
+// NOSONAR
 @Entity
 public class NoteEventJpa {
 

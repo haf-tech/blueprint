@@ -11,7 +11,7 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-@XmlRootElement
+@XmlRootElement(name = "NoteResponse")
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "NoteResponse", propOrder = {})
 public class NoteResponse {

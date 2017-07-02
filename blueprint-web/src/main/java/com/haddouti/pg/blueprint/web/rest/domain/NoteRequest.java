@@ -14,7 +14,7 @@ import javax.xml.bind.annotation.XmlType;
  * JAXB class for the note request
  *
  */
-@XmlRootElement
+@XmlRootElement(name = "NoteRequest")
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "NoteRequest", propOrder = {})
 public class NoteRequest {
