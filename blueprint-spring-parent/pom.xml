@@ -7,6 +7,7 @@
 		<groupId>com.haddouti.pg</groupId>
 		<artifactId>blueprint-parent</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
+		<relativePath>../blueprint-parent/pom.xml</relativePath>
 	</parent>
 
 	<artifactId>blueprint-spring-parent</artifactId>
