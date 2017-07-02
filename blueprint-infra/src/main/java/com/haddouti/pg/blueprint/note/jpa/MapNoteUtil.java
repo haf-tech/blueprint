@@ -6,7 +6,7 @@ import com.haddouti.pg.blueprint.note.jpa.domain.NoteJpa;
 public class MapNoteUtil {
 
 	private MapNoteUtil() {
-	};
+	}
 
 	public static Note toNote(NoteJpa jpa) {
 

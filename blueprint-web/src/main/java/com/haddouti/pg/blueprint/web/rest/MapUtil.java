@@ -6,7 +6,7 @@ import com.haddouti.pg.blueprint.web.rest.domain.NoteItem;
 public class MapUtil {
 
 	private MapUtil() {
-	};
+	}
 
 	public static NoteItem toNoteItem(Note note) {
 
