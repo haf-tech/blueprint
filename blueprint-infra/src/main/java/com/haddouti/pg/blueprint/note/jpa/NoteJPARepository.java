@@ -33,9 +33,8 @@ public class NoteJPARepository implements NoteRepository {
 	public List<Note> findAll() {
 
 		List<NoteJpa> allJpaNotes = dao.findAll();
-		List<Note> notes = allJpaNotes.stream().map(MapNoteUtil::toNote).collect(Collectors.toList());
 
-		return notes;
+		return allJpaNotes.stream().map(MapNoteUtil::toNote).collect(Collectors.toList());
 	}
 
 	@Transactional

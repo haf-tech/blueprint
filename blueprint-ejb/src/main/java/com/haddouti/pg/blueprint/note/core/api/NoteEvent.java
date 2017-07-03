@@ -8,7 +8,7 @@ package com.haddouti.pg.blueprint.note.core.api;
  */
 public interface NoteEvent {
 
-	public static enum NoteActionType {
+	public enum NoteActionType {
 		ADD, UPDATE, DELETE
 	}
 
