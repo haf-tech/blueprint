@@ -169,6 +169,27 @@ public class RestNoteMaintenanceTest {
 				.andExpect(content().contentType(contentTypeJson)).andExpect(jsonPath("$.items", hasSize(1)));
 	}
 
+	@Test
+	// @Transactional
+	public void testDeleteNoteNegativeJson() throws Exception {
+
+		final NoteRequest req = new NoteRequest();
+		NoteItem noteItem = new NoteItem();
+		noteItem.setId(4099900L);
+		noteItem.setTitle("New Title 3");
+		noteItem.setContent("New Content 3");
+		req.getItems().add(noteItem);
+
+		final String json = json(req);
+
+		// delete
+		mockMvc.perform(delete("/note/v1/note").content(json).contentType(contentTypeJson)).andDo(print())
+				.andExpect(status().isOk()).andExpect(content().contentType(contentTypeJson))
+				.andExpect(jsonPath("$.resultStatus[0].code", is("0")))
+				.andExpect(jsonPath("$.resultStatus[1].code", is("50")));
+
+	}
+
 	private String json(Object o) throws IOException {
 		MockHttpOutputMessage mockHttpOutputMessage = new MockHttpOutputMessage();
 		this.mappingJackson2HttpMessageConverter.write(o, MediaType.APPLICATION_JSON, mockHttpOutputMessage);

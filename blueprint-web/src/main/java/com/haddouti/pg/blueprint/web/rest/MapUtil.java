@@ -14,6 +14,7 @@ public class MapUtil {
 		ni.setId(note.getId());
 		ni.setTitle(note.getTitle());
 		ni.setContent(note.getContent());
+		ni.setUserId(note.getCreatedByUser());
 		return ni;
 	}
 
@@ -23,6 +24,7 @@ public class MapUtil {
 		ni.setId(noteItem.getId());
 		ni.setTitle(noteItem.getTitle());
 		ni.setContent(noteItem.getContent());
+		ni.setCreatedByUser(noteItem.getUserId());
 		return ni;
 	}
 }
