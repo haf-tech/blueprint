@@ -29,6 +29,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.mock.http.MockHttpInputMessage;
 import org.springframework.mock.http.MockHttpOutputMessage;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -41,6 +42,7 @@ import com.haddouti.pg.blueprint.note.core.service.api.NoteService;
 import com.haddouti.pg.blueprint.web.Application;
 import com.haddouti.pg.blueprint.web.rest.domain.NoteItem;
 import com.haddouti.pg.blueprint.web.rest.domain.NoteRequest;
+import com.haddouti.pg.blueprint.web.rest.domain.NoteResponse;
 
 /**
  * Test unit for the REST interface and bounded context "note maintenance".
@@ -144,20 +146,25 @@ public class RestNoteMaintenanceTest {
 		noteItem.setContent("New Content 3");
 		req.getItems().add(noteItem);
 
-		final String json = json(req);
-
-		// retrieve
-		mockMvc.perform(get("/note/v1/note")).andExpect(status().isOk()).andDo(print())
-				.andExpect(content().contentType(contentTypeJson)).andExpect(jsonPath("$.items", hasSize(1)));
-
-		// add
+		String json = json(req);
+		// add a new one to the storage
 		mockMvc.perform(put("/note/v1/note").content(json).contentType(contentTypeJson)).andDo(print())
 				.andExpect(status().isOk()).andExpect(content().contentType(contentTypeJson))
 				.andExpect(jsonPath("$.items", hasSize(1)));
 
-		// retrieve
-		mockMvc.perform(get("/note/v1/note")).andExpect(status().isOk()).andDo(print())
-				.andExpect(content().contentType(contentTypeJson)).andExpect(jsonPath("$.items", hasSize(2)));
+		// retrieve the first ID, which will be deleted
+		final NoteResponse noteResponse = fromJson(
+				mockMvc.perform(get("/note/v1/note")).andReturn().getResponse().getContentAsString());
+		final int sizeAfterAdd = noteResponse.getItems().size();
+		final Long idToRemove = noteResponse.getItems().get(0).getId();
+		noteItem.setId(idToRemove);
+
+		json = json(req);
+
+		// // retrieve
+		// mockMvc.perform(get("/note/v1/note")).andExpect(status().isOk()).andDo(print())
+		// .andExpect(content().contentType(contentTypeJson))
+		// .andExpect(jsonPath("$.items", hasSize(baseSize + 1)));
 
 		// delete
 		mockMvc.perform(delete("/note/v1/note").content(json).contentType(contentTypeJson)).andDo(print())
@@ -166,7 +173,8 @@ public class RestNoteMaintenanceTest {
 
 		// retrieve
 		mockMvc.perform(get("/note/v1/note")).andExpect(status().isOk()).andDo(print())
-				.andExpect(content().contentType(contentTypeJson)).andExpect(jsonPath("$.items", hasSize(1)));
+				.andExpect(content().contentType(contentTypeJson))
+				.andExpect(jsonPath("$.items", hasSize(sizeAfterAdd - 1)));
 	}
 
 	@Test
@@ -194,6 +202,11 @@ public class RestNoteMaintenanceTest {
 		MockHttpOutputMessage mockHttpOutputMessage = new MockHttpOutputMessage();
 		this.mappingJackson2HttpMessageConverter.write(o, MediaType.APPLICATION_JSON, mockHttpOutputMessage);
 		return mockHttpOutputMessage.getBodyAsString();
+	}
+
+	private NoteResponse fromJson(String content) throws IOException {
+		MockHttpInputMessage msg = new MockHttpInputMessage(content.getBytes());
+		return (NoteResponse) this.mappingJackson2HttpMessageConverter.read(NoteResponse.class, msg);
 	}
 
 	private String xml(Class clazz, Object o) throws Exception {
