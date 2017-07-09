@@ -9,10 +9,12 @@ Blueprint is a playground for illustrating different paradigms.
 
 In the meantime the following concepts are integrated or planned:
 
-- Spring Boot
-- AsciiDoctor integration, with UML and different outputs
-- Onion architecture
-- Docker build/push
+* Spring Boot
+* AsciiDoctor integration, with UML and different outputs
+** Swagger integration
+** Swagger2Markup integration (automatic interface doc generation and integration in overall doc)
+* Onion architecture
+* Docker build/push
 
 Next:
 
