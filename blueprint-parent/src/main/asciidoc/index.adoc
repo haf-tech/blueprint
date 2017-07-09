@@ -2,6 +2,7 @@
 Hafid Haddouti <code@haddouti.com>
 {project-version}
 :numbered:
+:doctype: book
 :toc: left
 :toclevels: 3
 :sectanchors:
@@ -14,3 +15,9 @@ include::20_monitoring.adoc[]
 include::30_docker.adoc[]
 include::10_docu.adoc[]
 include::90_references.adoc[]
+
+
+include::swagger/overview.adoc[]
+include::swagger/paths.adoc[]
+include::swagger/definitions.adoc[]
+include::swagger/security.adoc[]

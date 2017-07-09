@@ -37,24 +37,56 @@
 		<sonar.reportsPath>${sonar.jacoco.reportPaths}</sonar.reportsPath>
 
 
+		<!-- **** Documentation **** -->
 		<!-- AsciiDoctor: Maven build date format -->
 		<asciidoctorj.version>1.5.5</asciidoctorj.version>
 		<asciidoctorj.pdf.version>1.5.0-alpha.11</asciidoctorj.pdf.version>
 		<asciidoctorj.diagram.version>1.5.4</asciidoctorj.diagram.version>
+		<asciidoc.base.input.dir>${project.basedir}/src/main/asciidoc</asciidoc.base.input.dir>
 		<asciidoc.base.output.dir>target/generated-docs/${project.version}</asciidoc.base.output.dir>
 		<asciidoc.gen.dir>${project.build.directory}/asciidoc/generated</asciidoc.gen.dir>
 		<maven.build.timestamp.format>yyyy-MM-dd HH</maven.build.timestamp.format>
 
-		<!-- <swagger2markup.version>1.3.1</swagger2markup.version> -->
+		<!-- swagger -->
+		<swagger2markup.version>1.3.1</swagger2markup.version>
+		<swagger.output.dir>${asciidoc.base.input.dir}/swagger</swagger.output.dir>
+		<swagger.snippetOutput.dir>${swagger.output.dir}/snippet</swagger.snippetOutput.dir>
+		<swagger.output.dir>${project.basedir}/../target/swagger</swagger.output.dir>
+		<swagger.snippetOutput.dir>${swagger.output.dir}/snippet</swagger.snippetOutput.dir>
+		<swagger.asciidoc.dir>${project.basedir}/src/main/asciidoc/swagger</swagger.asciidoc.dir>
+
 		<!-- <swagger.output.dir>${project.build.directory}/swagger</swagger.output.dir> -->
 		<!-- <swagger.snippetOutput.dir>${project.build.directory}/asciidoc/snippets</swagger.snippetOutput.dir> -->
 		<!-- <swagger.input>${swagger.output.dir}/swagger.json</swagger.input> -->
 	</properties>
 
+
+	<pluginRepositories>
+		<!-- Bintray/JCenter: For swagger2markup dependency to paleo-core -->
+		<pluginRepository>
+			<id>jcenter-releases</id>
+			<name>jcenter</name>
+			<url>http://jcenter.bintray.com</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</pluginRepository>
+	</pluginRepositories>
+
+	<repositories>
+		<!-- Bintray/JCenter: For swagger2markup dependency to paleo-core -->
+		<repository>
+			<id>jcentral</id>
+			<name>bintray</name>
+			<url>http://jcenter.bintray.com</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+
 	<dependencyManagement>
 		<dependencies>
-
-
 
 			<!-- Test -->
 			<dependency>
@@ -237,6 +269,50 @@
 						</plugin> -->
 
 
+					<plugin>
+						<groupId>io.github.swagger2markup</groupId>
+						<artifactId>swagger2markup-maven-plugin</artifactId>
+						<version>${swagger2markup.version}</version>
+						<dependencies>
+							<dependency>
+								<groupId>io.github.swagger2markup</groupId>
+								<artifactId>swagger2markup-import-files-ext</artifactId>
+								<version>${swagger2markup.version}</version>
+							</dependency>
+							<dependency>
+								<groupId>io.github.swagger2markup</groupId>
+								<artifactId>swagger2markup-spring-restdocs-ext</artifactId>
+								<version>${swagger2markup.version}</version>
+							</dependency>
+						</dependencies>
+						<configuration>
+							<swaggerInput>${swagger.output.dir}/swagger.json</swaggerInput>
+							<outputDir>${swagger.asciidoc.dir}</outputDir>
+							<config>
+								<swagger2markup.markupLanguage>ASCIIDOC</swagger2markup.markupLanguage>
+								<swagger2markup.pathsGroupedBy>TAGS</swagger2markup.pathsGroupedBy>
+								
+								<!-- 
+								<swagger2markup.extensions.dynamicOverview.contentPath>${project.basedir}/src/docs/asciidoc/extensions/overview</swagger2markup.extensions.dynamicOverview.contentPath>
+								<swagger2markup.extensions.dynamicDefinitions.contentPath>${project.basedir}/src/docs/asciidoc/extensions/definitions</swagger2markup.extensions.dynamicDefinitions.contentPath>
+								<swagger2markup.extensions.dynamicPaths.contentPath>${project.basedir}/src/docs/asciidoc/extensions/paths</swagger2markup.extensions.dynamicPaths.contentPath>
+								<swagger2markup.extensions.dynamicSecurity.contentPath>${project.basedir}src/docs/asciidoc/extensions/security/</swagger2markup.extensions.dynamicSecurity.contentPath>
+								 -->
+
+								<swagger2markup.extensions.springRestDocs.snippetBaseUri>${swagger.snippetOutput.dir}</swagger2markup.extensions.springRestDocs.snippetBaseUri>
+								<swagger2markup.extensions.springRestDocs.defaultSnippets>true</swagger2markup.extensions.springRestDocs.defaultSnippets>
+							</config>
+						</configuration>
+						<executions>
+							<execution>
+								<phase>generate-resources</phase>
+								<goals>
+									<goal>convertSwagger2markup</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+
 
 					<!-- AsciiDoctor - http://asciidoctor.org/ AsciiDoctorJ Extension: https://github.com/asciidoctor/asciidoctorj -->
 					<plugin>
@@ -286,7 +362,7 @@
 									<outputDirectory>${asciidoc.base.output.dir}/dockbook</outputDirectory>
 								</configuration>
 							</execution>
-							<!-- -->
+							<!-- PDF Outputs failes wiht swagger2markup generated include files 
 							<execution>
 								<id>output-pdf</id>
 								<phase>generate-resources</phase>
@@ -297,11 +373,12 @@
 									<backend>pdf</backend>
 									<outputDirectory>${asciidoc.base.output.dir}/pdf</outputDirectory>
 									<attributes>
-										<!-- expects images always under src/main/asciidoc <imagesdir>../../../target/generated-docs/${project.version}/images/</imagesdir> -->
+										<! - - expects images always under src/main/asciidoc <imagesdir>../../../target/generated-docs/${project.version}/images/</imagesdir> - - >
 										<imagesdir>${project.build.directory}/generated-docs/${project.version}/pdf/images/</imagesdir>
 									</attributes>
 								</configuration>
 							</execution>
+							-->
 						</executions>
 						<!-- General configuration for all doctypes -->
 						<configuration>

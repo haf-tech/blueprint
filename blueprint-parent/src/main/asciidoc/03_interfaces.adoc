@@ -15,10 +15,27 @@ The swagger capabilities is reached with the following libs:
 
 === Swagger AsciiDoctor Integration
 
-*in progress*
-Idea:
+Swagger (or now https://www.openapis.org/) provides the toolset for defining a REST interface. 
+The Swagger JSON definition will be used to generate AsciiDoc files which holds the information for every interface; totally generated.
+To achieve this is the following tool chain necessary
 
-* Using any Swagger2markup use the swagger info to generate AsciiDoctor
-* in best case during runtime
-* for this is a maven plugin necessary, like swagger-maven-plugin
+* springfox
+** Configure and enable Swagger support
+** Generate swagger.json in a test unit using the /v2/api-docs?group=Note endpoint
+** Generate REST snippets (Request and Response examples) __tbd__
+* swagger2markup
+*** Configure to generate based on swagger.json a documentation
+*** include the generated adoc
+
+Know bugs
+
+* AsciiDoctor-PDF: The generation a PDF from swagger documentation fails. The reason is a missing initialization in the internal lib 
+
+Open
+
+* Refactor the test unit to separate class
+ 
+=== References
+
+See <<_note_maintenance, Note API>>.
 

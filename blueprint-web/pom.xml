@@ -5,7 +5,7 @@
 	<artifactId>blueprint-web</artifactId>
 	<name>Blueprint Web</name>
 	<packaging>jar</packaging>
-	
+
 	<parent>
 		<groupId>com.haddouti.pg</groupId>
 		<artifactId>blueprint-spring-parent</artifactId>
@@ -17,7 +17,9 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<java.version>1.8</java.version>
 
+		<!-- Spring & Co -->
 		<springfox.version>2.7.0</springfox.version>
+		<spring.restdocs.version>1.1.0.RELEASE</spring.restdocs.version>
 
 		<dropwizard.metrics.version>3.2.2</dropwizard.metrics.version>
 
@@ -28,6 +30,7 @@
 		<docker.image.prefix>${project.groupId}</docker.image.prefix>
 		<docker.repository>haf-tech/blueprint</docker.repository>
 	</properties>
+
 
 	<dependencies>
 
@@ -79,6 +82,13 @@
 		</dependency>
 
 		<!-- Swagger Support -->
+		<!-- Joda-Time: force 2.9.9, to avoid problems with 2.9.7 -->
+		<dependency>
+			<groupId>joda-time</groupId>
+			<artifactId>joda-time</artifactId>
+			<version>2.9.9</version>
+			<scope>test</scope>
+		</dependency>
 		<dependency>
 			<groupId>io.springfox</groupId>
 			<artifactId>springfox-swagger-ui</artifactId>
@@ -91,10 +101,25 @@
 			<version>${springfox.version}</version>
 			<scope>compile</scope>
 		</dependency>
+
+<!-- 
+		<dependency>
+			<groupId>io.github.swagger2markup</groupId>
+			<artifactId>swagger2markup-spring-restdocs-ext</artifactId>
+			<version>${swagger2markup.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.restdocs</groupId>
+			<artifactId>spring-restdocs-mockmvc</artifactId>
+			<scope>test</scope>
+		</dependency>
+ -->
 	</dependencies>
 
-	<build>
 
+	<build>
 
 		<plugins>
 
@@ -123,15 +148,12 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<!-- 
-				<executions>
-					<execution>
-						<goals>
-							<goal>test</goal>
-						</goals>
-					</execution>
-				</executions>
-				 -->
+				<configuration>
+					<systemPropertyVariables>
+						<io.springfox.staticdocs.outputDir>${swagger.output.dir}</io.springfox.staticdocs.outputDir>
+						<io.springfox.staticdocs.snippetsOutputDir>${swagger.snippetOutput.dir}</io.springfox.staticdocs.snippetsOutputDir>
+					</systemPropertyVariables>
+				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.jacoco</groupId>
