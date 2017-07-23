@@ -29,7 +29,7 @@ script:
  # test coverage 1 - push sonarcloud.io
  - mvn org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar
  # test coverage 2 - push to codecov.io
- - cd ../target/ && bash <(curl -s https://codecov.io/bash)
+ - cd ../target/jacoco && bash <(curl -s https://codecov.io/bash)
 
 # Push the generated HTML docu to GitHub pages
 after_success:
