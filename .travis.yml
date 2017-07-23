@@ -27,7 +27,8 @@ script:
  # prepare the docs to output
  - cp -R target/generated-docs/*/html/* ../output
  # test coverage 1 - push sonarcloud.io
- - mvn org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar
+ #- mvn org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar
+ - mvn org.jacoco:jacoco-maven-plugin:report-aggregate install sonar:sonar
  # test coverage 2 - push to codecov.io
  - cd ../target/jacoco && bash <(curl -s https://codecov.io/bash)
 
