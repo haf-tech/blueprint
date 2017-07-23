@@ -187,6 +187,24 @@
 					<groupId>org.jacoco</groupId>
 					<artifactId>jacoco-maven-plugin</artifactId>
 					<version>0.7.9</version>
+					<configuration>
+						<!-- directory for reports -->
+						<outputDirectory>${project.basedir}/../target/jacoco</outputDirectory>
+					</configuration>
+					<executions>
+						<execution>
+							<goals>
+								<goal>prepare-agent</goal>
+							</goals>
+						</execution>
+						<execution>
+							<id>report</id>
+							<phase>prepare-package</phase>
+							<goals>
+								<goal>report</goal>
+							</goals>
+						</execution>
+					</executions>
 				</plugin>
 
 
@@ -291,13 +309,11 @@
 							<config>
 								<swagger2markup.markupLanguage>ASCIIDOC</swagger2markup.markupLanguage>
 								<swagger2markup.pathsGroupedBy>TAGS</swagger2markup.pathsGroupedBy>
-								
-								<!-- 
-								<swagger2markup.extensions.dynamicOverview.contentPath>${project.basedir}/src/docs/asciidoc/extensions/overview</swagger2markup.extensions.dynamicOverview.contentPath>
-								<swagger2markup.extensions.dynamicDefinitions.contentPath>${project.basedir}/src/docs/asciidoc/extensions/definitions</swagger2markup.extensions.dynamicDefinitions.contentPath>
-								<swagger2markup.extensions.dynamicPaths.contentPath>${project.basedir}/src/docs/asciidoc/extensions/paths</swagger2markup.extensions.dynamicPaths.contentPath>
-								<swagger2markup.extensions.dynamicSecurity.contentPath>${project.basedir}src/docs/asciidoc/extensions/security/</swagger2markup.extensions.dynamicSecurity.contentPath>
-								 -->
+
+								<!-- <swagger2markup.extensions.dynamicOverview.contentPath>${project.basedir}/src/docs/asciidoc/extensions/overview</swagger2markup.extensions.dynamicOverview.contentPath> 
+									<swagger2markup.extensions.dynamicDefinitions.contentPath>${project.basedir}/src/docs/asciidoc/extensions/definitions</swagger2markup.extensions.dynamicDefinitions.contentPath> 
+									<swagger2markup.extensions.dynamicPaths.contentPath>${project.basedir}/src/docs/asciidoc/extensions/paths</swagger2markup.extensions.dynamicPaths.contentPath> 
+									<swagger2markup.extensions.dynamicSecurity.contentPath>${project.basedir}src/docs/asciidoc/extensions/security/</swagger2markup.extensions.dynamicSecurity.contentPath> -->
 
 								<swagger2markup.extensions.springRestDocs.snippetBaseUri>${swagger.snippetOutput.dir}</swagger2markup.extensions.springRestDocs.snippetBaseUri>
 								<swagger2markup.extensions.springRestDocs.defaultSnippets>true</swagger2markup.extensions.springRestDocs.defaultSnippets>
@@ -363,22 +379,12 @@
 								</configuration>
 							</execution>
 							<!-- PDF Outputs failes wiht swagger2markup generated include files 
-							<execution>
-								<id>output-pdf</id>
-								<phase>generate-resources</phase>
-								<goals>
-									<goal>process-asciidoc</goal>
-								</goals>
-								<configuration>
-									<backend>pdf</backend>
-									<outputDirectory>${asciidoc.base.output.dir}/pdf</outputDirectory>
-									<attributes>
-										<! - - expects images always under src/main/asciidoc <imagesdir>../../../target/generated-docs/${project.version}/images/</imagesdir> - - >
-										<imagesdir>${project.build.directory}/generated-docs/${project.version}/pdf/images/</imagesdir>
-									</attributes>
-								</configuration>
-							</execution>
-							-->
+								<execution> <id>output-pdf</id> <phase>generate-resources</phase> <goals> 
+								<goal>process-asciidoc</goal> </goals> <configuration> <backend>pdf</backend> 
+								<outputDirectory>${asciidoc.base.output.dir}/pdf</outputDirectory> <attributes> 
+								<! - - expects images always under src/main/asciidoc <imagesdir>../../../target/generated-docs/${project.version}/images/</imagesdir> 
+								- - > <imagesdir>${project.build.directory}/generated-docs/${project.version}/pdf/images/</imagesdir> 
+								</attributes> </configuration> </execution> -->
 						</executions>
 						<!-- General configuration for all doctypes -->
 						<configuration>
