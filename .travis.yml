@@ -26,8 +26,10 @@ script:
  - mvn -B -V generate-resources -Pdocumentation
  # prepare the docs to output
  - cp -R target/generated-docs/*/html/* ../output
- # test coverage
+ # test coverage 1 - push sonarcloud.io
  - mvn org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar
+ # test coverage 2 - push to codecov.io
+ - bash <(curl -s https://codecov.io/bash)
 
 # Push the generated HTML docu to GitHub pages
 after_success:
