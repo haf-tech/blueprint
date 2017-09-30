@@ -1,5 +1,7 @@
 package com.haddouti.pg.blueprint.web.rest.domain;
 
+import java.util.Date;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
@@ -11,10 +13,12 @@ public class NoteItem {
 	private String title;
 	private String content;
 	private String userId;
+	private Date reminderAt;
 
 	@Override
 	public String toString() {
-		return "NoteItem [id=" + id + ", title=" + title + ", content=" + content + ", userId=" + userId + "]";
+		return "NoteItem [id=" + id + ", title=" + title + ", content=" + content + ", userId=" + userId
+				+ ", reminderAt=" + reminderAt + "]";
 	}
 
 	public Long getId() {
@@ -47,6 +51,14 @@ public class NoteItem {
 
 	public void setContent(String content) {
 		this.content = content;
+	}
+
+	public Date getReminderAt() {
+		return reminderAt;
+	}
+
+	public void setReminderAt(Date reminderAt) {
+		this.reminderAt = reminderAt;
 	}
 
 }

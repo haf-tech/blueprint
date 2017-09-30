@@ -1,0 +1,14 @@
+
+# Identity
+spring:
+   application:
+     name: bp
+
+# General spring properties
+server:
+   port: 8099
+
+# Deactivate security, e.g. for Actuator
+management:
+   security:
+      enabled: false

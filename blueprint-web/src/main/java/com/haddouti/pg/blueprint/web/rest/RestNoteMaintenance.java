@@ -5,6 +5,8 @@ import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,11 +29,14 @@ import com.haddouti.pg.blueprint.web.rest.domain.NoteResponse.StatusCode;
 @RequestMapping("/note/v1")
 public class RestNoteMaintenance {
 
+	private static Logger log = LoggerFactory.getLogger(RestNoteMaintenance.class);
+
 	@Inject
 	private NoteService service;
 
 	@RequestMapping(method = RequestMethod.GET, path = "/note")
 	public NoteResponse getAllNotes() {
+		log.info("getAllNotes()");
 
 		List<NoteItem> noteItems = service.retrieveAllNotes().stream().map(MapUtil::toNoteItem)
 				.collect(Collectors.toList());
@@ -50,6 +55,7 @@ public class RestNoteMaintenance {
 	@RequestMapping(method = RequestMethod.PUT, path = "/note", consumes = { MediaType.APPLICATION_JSON_VALUE,
 			MediaType.APPLICATION_XML_VALUE })
 	public @ResponseBody NoteResponse putNote(@RequestBody NoteRequest req) {
+		log.info("putNote(): request={}", req);
 
 		final List<Long> noteIds = req.getItems().stream().map(MapUtil::toNote).map(service::persistNote)
 				.collect(Collectors.toList());
@@ -76,6 +82,8 @@ public class RestNoteMaintenance {
 	@RequestMapping(method = RequestMethod.DELETE, path = "/note", consumes = { MediaType.APPLICATION_JSON_VALUE,
 			MediaType.APPLICATION_XML_VALUE })
 	public @ResponseBody NoteResponse deleteNote(@RequestBody NoteRequest req) {
+
+		log.info("deleteNote(): req={}", req);
 
 		List<Boolean> res = req.getItems().stream().map(MapUtil::toNote).map(n -> n.getId())
 				.map(service::deleteNoteById).collect(Collectors.toList());

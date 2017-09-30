@@ -25,6 +25,7 @@ public class MapUtil {
 		ni.setTitle(noteItem.getTitle());
 		ni.setContent(noteItem.getContent());
 		ni.setCreatedByUser(noteItem.getUserId());
+		ni.setReminderAt(noteItem.getReminderAt());
 		return ni;
 	}
 }

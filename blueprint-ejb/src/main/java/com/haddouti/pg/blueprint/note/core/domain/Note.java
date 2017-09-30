@@ -16,17 +16,15 @@ public class Note {
 	private Date createdAt;
 	private Date updatedAt;
 	private String createdByUser;
+	private Date reminderAt;
 	private List<String> tags = new ArrayList<>();
 	private List<NoteAttachment> attachments = new ArrayList<>();
 
 	@Override
 	public String toString() {
-		StringBuilder builder = new StringBuilder();
-		builder.append("Note [id=").append(id).append(", title=").append(title).append(", content=").append(content)
-				.append(", createdAt=").append(createdAt).append(", updatedAt=").append(updatedAt)
-				.append(", createdByUser=").append(createdByUser).append(", tags=").append(tags)
-				.append(", attachments=").append(attachments).append("]");
-		return builder.toString();
+		return "Note [id=" + id + ", title=" + title + ", content=" + content + ", createdAt=" + createdAt
+				+ ", updatedAt=" + updatedAt + ", createdByUser=" + createdByUser + ", reminderAt=" + reminderAt
+				+ ", tags=" + tags + ", attachments=" + attachments + "]";
 	}
 
 	@Override
@@ -128,6 +126,14 @@ public class Note {
 
 	public void setAttachments(List<NoteAttachment> attachments) {
 		this.attachments = attachments;
+	}
+
+	public Date getReminderAt() {
+		return reminderAt;
+	}
+
+	public void setReminderAt(Date reminderAt) {
+		this.reminderAt = reminderAt;
 	}
 
 }

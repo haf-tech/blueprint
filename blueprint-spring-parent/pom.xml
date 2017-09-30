@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>com.haddouti.pg</groupId>
 		<artifactId>blueprint-parent</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
+		<version>0.1.1-SNAPSHOT</version>
 		<relativePath>../blueprint-parent/pom.xml</relativePath>
 	</parent>
 
@@ -22,26 +22,39 @@
 	</modules>
 
 	<properties>
-		<spring.version>4.3.9.RELEASE</spring.version>
-		<!-- Spring Boot. Use only this version. 1.5.4 has problems with Actuator and 
-			Jackson dependencies -->
-		<spring.boot.version>1.5.2.RELEASE</spring.boot.version>
+		<!-- <spring.version>4.3.9.RELEASE</spring.version> -->
+		<!-- Spring Boot -->
+		<spring.boot.version>1.5.7.RELEASE</spring.boot.version>
+		<spring.sleuth.version>1.2.4.RELEASE</spring.sleuth.version>
 	</properties>
 
 	<dependencyManagement>
 		<dependencies>
 
 			<!-- ************ Spring *********** -->
+
 			<!-- Consider: spring-boot-dependencies should be the last spring lib. 
 				To override some other spring modules, place them BEFORE with scope=import 
 				and type=pom -->
 			<dependency>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-dependencies</artifactId>
-				<version>1.5.2.RELEASE</version>
+				<version>1.5.7.RELEASE</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
+
+			<!-- Spring Cloud: Sleuth. Place this AFTER boot-dependencies to avoid 
+				the usage of 1.5.4 -->
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-sleuth</artifactId>
+				<version>${spring.sleuth.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+
+
 		</dependencies>
 	</dependencyManagement>
 
@@ -56,6 +69,11 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-sleuth</artifactId>
 		</dependency>
 	</dependencies>
 

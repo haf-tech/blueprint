@@ -2,7 +2,32 @@
 
 === Overview
 
-This chapters gives an about the monitoring mechanism in this application using Codahale Metrics and Spring Actuator.
+This chapter gives an overview about the monitoring mechanism in this application to fulfill different aspects like:
+
+* Application logs: represents the state of the application on business and technical point of view
+* Application metrics: Structured view on pre-defined measurement points, as well on business and technical point of view
+* System metrics: Any technical information outside of the application, like network traffic and system load
+* Request tracing: Trace the request and responses on the one hand, and the different hops caused from a client request
+* Health monitoring: Any information to monitor the stability and availability of the application
+
+This rough categorization of the relevant monitoring facets have different requirements regarding the tooling, topicality and amount of data. 
+
+The spring (boot) ecosystem provides here a good integrated set of modules to gather and expose such data. In addition exists further enhancements to extend the interpretability of the collected data.
+This chapter goes into the usage and integration of the available spring modules and further enhancing modules, like:
+
+* Spring Actuator
+* Spring Sleuth
+* Codahale Metrics
+* Zipkin
+* Elastisearch and Beats (Metricbeat, Packetbeat, Filebeat, Heartbeat)
+* Prometheus
+  
+Extras
+
+* Jolokia and Metricbeat
+* Zipkin Chrome Extension  
+
+ 
 
 === Spring Actuator
 
@@ -33,7 +58,7 @@ To activate this module is only a dependency necessary
 
 http://metrics.dropwizard.io[Coda Hale metrics] is one of the most famous metrics implementation. For providing own metrics is it advisable to use this lib for gather and deliver different kinds of metric information.
 
-Spring automatically determine the existins of Coda Hale Metrics in the classpaths and replace some of the own implementations with the one from Coda Hale/Dropwizard. The metrics will be also exposed via the /metrics endpoint.
+Spring automatically determine the existence of Coda Hale Metrics in the classpath and replace some of the own implementations with the one from Coda Hale/Dropwizard. The metrics will be also exposed via the /metrics endpoint.
 
 To integrate Coda Hale/Dropwizard metrics add this dependency to the pom.xml
 [source,xml]
@@ -106,6 +131,70 @@ For an usage look at the `com.haddouti.pg.blueprint.note.infra.monitoring.NoteEv
 
 ----
 
+=== Spring Cloud Sleuth
+
+Spring Cloud Sleuth helps tracing a request from the ingress to the egress, including all hops. Every new incoming request represents a trace with a trace ID. Every hop to a component during processing this request is a new span with a span ID.
+A span may contains additional information like tags or metadata. Common tags are start and end timestamp.
+
+Once added Spring Cloud Sleuth to the project, instruments automatically common communication channels:
+
+* Any Spring Cloud Stream binder (exists for Apache Kafka, RabbitMQ etc)
+* HTTP headers received over Spring MVC Controller
+* Any request made with Springs RestTemplate
+
+==== Intregation
+
+To integrate Spring Cloud Sleuth use this dependency
+
+[source,xml]
+----
+<dependencyManagement>
+	<!-- Spring Cloud: Sleuth. Place this AFTER boot-dependencies to avoid 
+				the usage of 1.5.4 -->
+	<dependency>
+		<groupId>org.springframework.cloud</groupId>
+		<artifactId>spring-cloud-sleuth</artifactId>
+		<version>${spring.sleuth.version}</version>
+		<type>pom</type>
+		<scope>import</scope>
+	</dependency>
+</dependencyManagement>
+
+<dependencies>
+	<dependency>
+		<groupId>org.springframework.cloud</groupId>
+		<artifactId>spring-cloud-starter-sleuth</artifactId>
+	</dependency>
+</dependencies>
+----
+
+Every usage of SLF4J like
+
+[source,java]
+----
+
+	private static Logger log = LoggerFactory.getLogger(RestNoteMaintenance.class);
+	
+	// ...
+	log.info("putNote(): request={}", req);
+----
+
+produces an output using SLF4J MDC
+
+[source]
+----
+2017-09-30 20:17:17.560  INFO [-,72eb71ec78f71000,72eb71ec78f71000,false] 5268 --- [nio-8099-exec-1] c.h.p.b.web.rest.RestNoteMaintenance     : putNote(): request=NoteRequest [items=[]]
+
+----
+
+Relevant are the following new information
+`[bp,36ab5fc28f679a34,36ab5fc28f679a34,false]`
+with the format `[appname,traceId,spanId,exportable]`.
+
+* appname: defined in `spring.application.name`, e.g. in application.yml or bootstrap.yml
+* traceId: generated, represents a unique request
+* spanId: generated, every hop gets an own ID
+* exportable: whether the log should be exported to Zipkin or not.
 
 === References
 
