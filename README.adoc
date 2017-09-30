@@ -15,9 +15,13 @@ In the meantime the following concepts are integrated or planned:
 ** Swagger2Markup integration (automatic interface doc generation and integration in overall doc)
 * Onion architecture
 * Docker build/push
+* Monitoring
+** Spring Cloud Sleuth integration
 
 Next:
 
-- reactive programming
+* reactive programming
+* Monitoring
+** Zipkin
 
 An up to date documentation is https://haf-tech.github.io/blueprint/[online] available.
